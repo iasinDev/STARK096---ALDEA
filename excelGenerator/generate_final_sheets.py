@@ -165,7 +165,7 @@ def create_summary_sheet(wb, viviendas):
 
 
 def create_constructor_summary_sheet(wb):
-    """Create constructor summary sheet with aggregated items"""
+    """Create constructor summary sheet with aggregated items (headers only)"""
     ws = wb.create_sheet(title="Resumen Constructora", index=1)
     
     # Define styles
@@ -194,15 +194,104 @@ def create_constructor_summary_sheet(wb):
         cell.border = border_style
         cell.alignment = center_align
     
-    # Note: This will be filled manually or via aggregation logic later
-    ws.cell(row=4, column=1, value="[Pendiente]")
-    ws.cell(row=4, column=2, value="Se rellenará manualmente o mediante agregación")
-    ws.cell(row=4, column=3, value="")
-    
     # Column widths
     ws.column_dimensions['A'].width = 25
     ws.column_dimensions['B'].width = 50
     ws.column_dimensions['C'].width = 18
+
+
+def populate_constructor_summary(wb, catalog, viviendas):
+    """Populate constructor summary with DYNAMIC FORMULAS that aggregate from all sheets"""
+    ws = wb["Resumen Constructora"]
+    
+    # Define styles
+    border_style = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    center_align = Alignment(horizontal="center", vertical="center")
+    left_align = Alignment(horizontal="left", vertical="center")
+    
+    print_info("Creating dynamic formulas for constructor summary...")
+    
+    # Collect all sheet names (excluding Resumen and Resumen Constructora)
+    sheet_names = []
+    for vivienda in viviendas:
+        piso = vivienda.get("Piso", "")
+        piso_short = piso.replace("Escalera ", "E").replace(" - Planta ", " ").replace(" - Puerta ", "")
+        sheet_names.append(piso_short[:31])
+    
+    # Collect all concepts with their base names and selections
+    # Format: (full_display_name, base_concepto, seleccion_value)
+    all_concepts = []
+    
+    # Add pasos basicos
+    for paso in catalog["pasos_basicos"]:
+        if paso["codigo"] != "COCINA":
+            for opcion in paso["opciones"]:
+                full_name = f"{paso['nombre']} - {opcion['nombre']}"
+                all_concepts.append((full_name, paso['nombre'], opcion['nombre']))
+        else:
+            # Add all cocina options
+            for grupo in paso["grupos_por_tipo"]:
+                for opcion in grupo["opciones"]:
+                    full_name = f"{paso['nombre']} - {opcion['nombre']}"
+                    concept_tuple = (full_name, paso['nombre'], opcion['nombre'])
+                    if concept_tuple not in all_concepts:
+                        all_concepts.append(concept_tuple)
+    
+    # Add ALL mejoras from catalog
+    if "mejoras" in catalog:
+        for mejora_cat in catalog["mejoras"]:
+            if "items" in mejora_cat:
+                for item in mejora_cat["items"]:
+                    concepto = item.get("concepto", "")
+                    if concepto:
+                        all_concepts.append((concepto, concepto, None))  # None means no selection column
+    
+    # Sort by display name
+    all_concepts.sort(key=lambda x: x[0])
+    
+    current_row = 4
+    for idx, (display_name, base_concepto, seleccion) in enumerate(all_concepts, start=1):
+        codigo = f"MEJORA-{idx:03d}"
+        
+        # Column A: Código
+        ws.cell(row=current_row, column=1, value=codigo).border = border_style
+        ws.cell(row=current_row, column=1).alignment = center_align
+        
+        # Column B: Concepto
+        ws.cell(row=current_row, column=2, value=display_name).border = border_style
+        ws.cell(row=current_row, column=2).alignment = left_align
+        
+        # Column C: Dynamic formula
+        # For items with selection: SUMIFS(D:D, A:A, base_concepto, B:B, seleccion, E:E, "Sí")
+        # For items without selection: SUMIFS(D:D, A:A, concepto, E:E, "Sí")
+        formula_parts = []
+        for sheet_name in sheet_names:
+            sheet_ref = f"'{sheet_name}'"
+            if seleccion:  # Has selection column (pasos basicos)
+                # Need to match both concepto and seleccion
+                formula_parts.append(
+                    f"SUMIFS({sheet_ref}!D:D,{sheet_ref}!A:A,\"{base_concepto}\",{sheet_ref}!B:B,\"{seleccion}\",{sheet_ref}!E:E,\"Sí\")"
+                )
+            else:  # No selection column (mejoras)
+                formula_parts.append(
+                    f"SUMIFS({sheet_ref}!D:D,{sheet_ref}!A:A,\"{base_concepto}\",{sheet_ref}!E:E,\"Sí\")"
+                )
+        
+        formula = "=" + "+".join(formula_parts)
+        
+        cell_qty = ws.cell(row=current_row, column=3)
+        cell_qty.value = formula
+        cell_qty.border = border_style
+        cell_qty.alignment = center_align
+        
+        current_row += 1
+    
+    print_info(f"Created {len(all_concepts)} dynamic formula rows")
 
 
 def create_header_box(ws, vivienda):
@@ -447,10 +536,11 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                 ws[f'C{current_row}'].alignment = right_align
                 ws[f'C{current_row}'].number_format = '#,##0.00'
                 
-                ws[f'D{current_row}'].value = 1
+                ws[f'D{current_row}'].value = 0
                 ws[f'D{current_row}'].border = border_style
                 ws[f'D{current_row}'].alignment = center_align
                 
+                ws[f'E{current_row}'].value = "No"
                 ws[f'E{current_row}'].border = border_style
                 dv_sino = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
                 ws.add_data_validation(dv_sino)
@@ -478,63 +568,60 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
             ws[f'C{current_row}'].alignment = right_align
             ws[f'C{current_row}'].number_format = '#,##0.00'
             
-            ws[f'D{current_row}'].value = 1
+            ws[f'D{current_row}'].value = 0
             ws[f'D{current_row}'].border = border_style
             ws[f'D{current_row}'].alignment = center_align
             
-            ws[f'E{current_row}'].value = "Sí"
+            ws[f'E{current_row}'].value = "No"
             ws[f'E{current_row}'].border = border_style
             dv_sino = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
             ws.add_data_validation(dv_sino)
             dv_sino.add(f'E{current_row}')
             
-            ws[f'F{current_row}'].value = 0
+            ws[f'F{current_row}'].value = f'=IF(E{current_row}="Sí",C{current_row}*D{current_row},0)'
             ws[f'F{current_row}'].border = border_style
             ws[f'F{current_row}'].alignment = right_align
             ws[f'F{current_row}'].number_format = '#,##0.00'
             
             current_row += 1
     
-    # Add key mejoras
-    mejoras_sample = [
-        ("Armario 2 hojas abatibles", 1093.75),
-        ("Armario 3 hojas abatibles", 1475.00),
-        ("Armario 4 hojas abatibles", 1620.44),
-        ("Mueble+espejo baño principal 80cm", 986.00),
-        ("Mampara ducha Walk-in 100", 995.25),
-        ("Paquete light cocina+baños", 687.50),
-        ("Cambio laminado → gres porcelánico", 2313.94),
-    ]
-    
-    for concepto, precio in mejoras_sample:
-        ws[f'A{current_row}'].value = concepto
-        ws[f'A{current_row}'].border = border_style
-        ws[f'A{current_row}'].alignment = left_align
-        
-        ws[f'B{current_row}'].value = ""
-        ws[f'B{current_row}'].border = border_style
-        
-        ws[f'C{current_row}'].value = precio
-        ws[f'C{current_row}'].border = border_style
-        ws[f'C{current_row}'].alignment = right_align
-        ws[f'C{current_row}'].number_format = '#,##0.00'
-        
-        ws[f'D{current_row}'].value = 0
-        ws[f'D{current_row}'].border = border_style
-        ws[f'D{current_row}'].alignment = center_align
-        
-        ws[f'E{current_row}'].value = "No"
-        ws[f'E{current_row}'].border = border_style
-        dv_sino = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
-        ws.add_data_validation(dv_sino)
-        dv_sino.add(f'E{current_row}')
-        
-        ws[f'F{current_row}'].value = f'=IF(E{current_row}="Sí",C{current_row}*D{current_row},0)'
-        ws[f'F{current_row}'].border = border_style
-        ws[f'F{current_row}'].alignment = right_align
-        ws[f'F{current_row}'].number_format = '#,##0.00'
-        
-        current_row += 1
+    # Add ALL mejoras from catalog
+    if "mejoras" in catalog:
+        for mejora_cat in catalog["mejoras"]:
+            if "items" in mejora_cat:
+                for item in mejora_cat["items"]:
+                    concepto = item.get("concepto", "")
+                    precio = item.get("precio", 0)
+                    
+                    if concepto:
+                        ws[f'A{current_row}'].value = concepto
+                        ws[f'A{current_row}'].border = border_style
+                        ws[f'A{current_row}'].alignment = left_align
+                        
+                        ws[f'B{current_row}'].value = ""
+                        ws[f'B{current_row}'].border = border_style
+                        
+                        ws[f'C{current_row}'].value = precio
+                        ws[f'C{current_row}'].border = border_style
+                        ws[f'C{current_row}'].alignment = right_align
+                        ws[f'C{current_row}'].number_format = '#,##0.00'
+                        
+                        ws[f'D{current_row}'].value = 0
+                        ws[f'D{current_row}'].border = border_style
+                        ws[f'D{current_row}'].alignment = center_align
+                        
+                        ws[f'E{current_row}'].value = "No"
+                        ws[f'E{current_row}'].border = border_style
+                        dv_sino = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
+                        ws.add_data_validation(dv_sino)
+                        dv_sino.add(f'E{current_row}')
+                        
+                        ws[f'F{current_row}'].value = f'=IF(E{current_row}="Sí",C{current_row}*D{current_row},0)'
+                        ws[f'F{current_row}'].border = border_style
+                        ws[f'F{current_row}'].alignment = right_align
+                        ws[f'F{current_row}'].number_format = '#,##0.00'
+                        
+                        current_row += 1
     
     data_end_row = current_row - 1
     
@@ -610,6 +697,9 @@ def generate_final_sheets():
         
         header_end_row = create_header_box(ws, vivienda)
         create_mejoras_table(ws, vivienda, catalog, header_end_row)
+    
+    print_info("Populating constructor summary with dynamic formulas...")
+    populate_constructor_summary(wb, catalog, viviendas)
     
     timestamp = get_timestamp()
     output_file = os.path.join(output_dir, f"viviendas_final_{timestamp}.xlsx")
