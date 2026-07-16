@@ -12,8 +12,16 @@
       "tipo": "seleccion_unica",
       "restricciones": [],
       "opciones": [
-        {"codigo": "CARP-01", "nombre": "BLANCA PANT HORIZONTAL", "precio": 0},
-        {"codigo": "CARP-02", "nombre": "BLANCA PANT VERTICAL", "precio": 0}
+        {
+          "codigo": "CARP-01",
+          "nombre": "BLANCA PANT HORIZONTAL",
+          "precio": 0
+        },
+        {
+          "codigo": "CARP-02",
+          "nombre": "BLANCA PANT VERTICAL",
+          "precio": 0
+        }
       ]
     },
     {
@@ -23,10 +31,26 @@
       "tipo": "seleccion_unica",
       "restricciones": [],
       "opciones": [
-        {"codigo": "LAM-01", "nombre": "Roble Treviso Marrón 2183", "precio": 0},
-        {"codigo": "LAM-02", "nombre": "Roble Berdal Gris 1037", "precio": 0},
-        {"codigo": "LAM-03", "nombre": "Roble Pinot Blanco 2111", "precio": 0},
-        {"codigo": "LAM-04", "nombre": "Roble Victoria Natural 2027", "precio": 0}
+        {
+          "codigo": "LAM-01",
+          "nombre": "Roble Treviso Marrón 2183",
+          "precio": 0
+        },
+        {
+          "codigo": "LAM-02",
+          "nombre": "Roble Berdal Gris 1037",
+          "precio": 0
+        },
+        {
+          "codigo": "LAM-03",
+          "nombre": "Roble Pinot Blanco 2111",
+          "precio": 0
+        },
+        {
+          "codigo": "LAM-04",
+          "nombre": "Roble Victoria Natural 2027",
+          "precio": 0
+        }
       ]
     },
     {
@@ -36,8 +60,16 @@
       "tipo": "seleccion_unica",
       "restricciones": [],
       "opciones": [
-        {"codigo": "BGE-01", "nombre": "LOMMA BONE CON LOMMA MOSAIC WARM", "precio": 0},
-        {"codigo": "BGE-02", "nombre": "LOMMA GREY CON LOMMA MOSAIC COLD", "precio": 0}
+        {
+          "codigo": "BGE-01",
+          "nombre": "LOMMA BONE CON LOMMA MOSAIC WARM",
+          "precio": 0
+        },
+        {
+          "codigo": "BGE-02",
+          "nombre": "LOMMA GREY CON LOMMA MOSAIC COLD",
+          "precio": 0
+        }
       ]
     },
     {
@@ -47,8 +79,16 @@
       "tipo": "seleccion_unica",
       "restricciones": [],
       "opciones": [
-        {"codigo": "BSU-01", "nombre": "CIRON WHITE CON CIRON COLD MOSAIC", "precio": 0},
-        {"codigo": "BSU-02", "nombre": "PUNE BLANCO CON WILDE WARD MOSAIC", "precio": 0}
+        {
+          "codigo": "BSU-01",
+          "nombre": "CIRON WHITE CON CIRON COLD MOSAIC",
+          "precio": 0
+        },
+        {
+          "codigo": "BSU-02",
+          "nombre": "PUNE BLANCO CON WILDE WARD MOSAIC",
+          "precio": 0
+        }
       ]
     },
     {
@@ -58,52 +98,170 @@
       "tipo": "seleccion_con_restricciones_vivienda",
       "grupos_por_tipo": [
         {
-          "tipos": ["E1 1A", "E1 2A", "E1 3A", "E1 1D", "E1 2D", "E1 3D", "E2 1A", "E2 2A", "E2 3A", "E2 1D", "E2 2D", "E2 3D", "E3 1A", "E3 2A", "E3 3A", "E3 1E", "E3 2E", "E3 3E"],
+          "tipos": [
+            "E1 1A",
+            "E1 2A",
+            "E1 3A",
+            "E1 1D",
+            "E1 2D",
+            "E1 3D",
+            "E2 1A",
+            "E2 2A",
+            "E2 3A",
+            "E2 1D",
+            "E2 2D",
+            "E2 3D",
+            "E3 1A",
+            "E3 2A",
+            "E3 3A",
+            "E3 1E",
+            "E3 2E",
+            "E3 3E"
+          ],
           "nombre": "1AD 2AD 3AE",
           "opciones": [
-            {"codigo": "COC-1ADAE-01", "nombre": "1AD 2AD 3AE PROJECT", "precio": 0},
-            {"codigo": "COC-1ADAE-02", "nombre": "1AD 2AD 3AE ELEGANCE", "precio": 4039.05},
-            {"codigo": "COC-1ADAE-03", "nombre": "1AD 2AD 3AE PREMIUM", "precio": 6067.20},
-            {"codigo": "COC-1ADAE-04", "nombre": "1AD 2AD 3AE ELEGANCE+", "precio": 5740.65},
-            {"codigo": "COC-1ADAE-05", "nombre": "1AD 2AD 3AE PREMIUM+", "precio": 7889.05}
+            {
+              "codigo": "COC-1ADAE-01",
+              "nombre": "1AD 2AD 3AE PROJECT",
+              "precio": 0
+            },
+            {
+              "codigo": "COC-1ADAE-02",
+              "nombre": "1AD 2AD 3AE ELEGANCE",
+              "precio": 4039.05
+            },
+            {
+              "codigo": "COC-1ADAE-03",
+              "nombre": "1AD 2AD 3AE PREMIUM",
+              "precio": 6067.20
+            },
+            {
+              "codigo": "COC-1ADAE-04",
+              "nombre": "1AD 2AD 3AE ELEGANCE+",
+              "precio": 5740.65
+            },
+            {
+              "codigo": "COC-1ADAE-05",
+              "nombre": "1AD 2AD 3AE PREMIUM+",
+              "precio": 7889.05
+            }
           ]
         },
         {
-          "tipos": ["E1 1B", "E1 2B", "E1 3B", "E1 1C", "E1 2C", "E1 3C"],
+          "tipos": [
+            "E1 1B",
+            "E1 2B",
+            "E1 3B",
+            "E1 1C",
+            "E1 2C",
+            "E1 3C"
+          ],
           "nombre": "1BC",
           "opciones": [
-            {"codigo": "COC-1BC-01", "nombre": "1BC PROJECT", "precio": 0},
-            {"codigo": "COC-1BC-02", "nombre": "1BC ELEGANCE", "precio": 4950.00},
-            {"codigo": "COC-1BC-03", "nombre": "1BC PREMIUM", "precio": 7046.90}
+            {
+              "codigo": "COC-1BC-01",
+              "nombre": "1BC PROJECT",
+              "precio": 0
+            },
+            {
+              "codigo": "COC-1BC-02",
+              "nombre": "1BC ELEGANCE",
+              "precio": 4950.00
+            },
+            {
+              "codigo": "COC-1BC-03",
+              "nombre": "1BC PREMIUM",
+              "precio": 7046.90
+            }
           ]
         },
         {
-          "tipos": ["E2 2B", "E2 3B", "E2 2C", "E2 3C"],
+          "tipos": [
+            "E2 2B",
+            "E2 3B",
+            "E2 2C",
+            "E2 3C"
+          ],
           "nombre": "2BC",
           "opciones": [
-            {"codigo": "COC-2BC-01", "nombre": "2BC PROJECT", "precio": 0},
-            {"codigo": "COC-2BC-02", "nombre": "2BC ELEGANCE", "precio": 5156.25},
-            {"codigo": "COC-2BC-03", "nombre": "2BC PREMIUM", "precio": 7261.72}
+            {
+              "codigo": "COC-2BC-01",
+              "nombre": "2BC PROJECT",
+              "precio": 0
+            },
+            {
+              "codigo": "COC-2BC-02",
+              "nombre": "2BC ELEGANCE",
+              "precio": 5156.25
+            },
+            {
+              "codigo": "COC-2BC-03",
+              "nombre": "2BC PREMIUM",
+              "precio": 7261.72
+            }
           ]
         },
         {
-          "tipos": ["E3 1B", "E3 2B", "E3 3B", "E3 1D", "E3 2D", "E3 3D"],
+          "tipos": [
+            "E3 1B",
+            "E3 2B",
+            "E3 3B",
+            "E3 1D",
+            "E3 2D",
+            "E3 3D"
+          ],
           "nombre": "3BD",
           "opciones": [
-            {"codigo": "COC-3BD-01", "nombre": "3BD PROJECT", "precio": 0},
-            {"codigo": "COC-3BD-02", "nombre": "3BD ELEGANCE", "precio": 4039.05},
-            {"codigo": "COC-3BD-03", "nombre": "3BD PREMIUM", "precio": 6067.20},
-            {"codigo": "COC-3BD-04", "nombre": "3BD ELEGANCE+", "precio": 5044.55},
-            {"codigo": "COC-3BD-05", "nombre": "3BD PREMIUM+", "precio": 7158.60}
+            {
+              "codigo": "COC-3BD-01",
+              "nombre": "3BD PROJECT",
+              "precio": 0
+            },
+            {
+              "codigo": "COC-3BD-02",
+              "nombre": "3BD ELEGANCE",
+              "precio": 4039.05
+            },
+            {
+              "codigo": "COC-3BD-03",
+              "nombre": "3BD PREMIUM",
+              "precio": 6067.20
+            },
+            {
+              "codigo": "COC-3BD-04",
+              "nombre": "3BD ELEGANCE+",
+              "precio": 5044.55
+            },
+            {
+              "codigo": "COC-3BD-05",
+              "nombre": "3BD PREMIUM+",
+              "precio": 7158.60
+            }
           ]
         },
         {
-          "tipos": ["E3 1C", "E3 2C", "E3 3C"],
+          "tipos": [
+            "E3 1C",
+            "E3 2C",
+            "E3 3C"
+          ],
           "nombre": "3C",
           "opciones": [
-            {"codigo": "COC-3C-01", "nombre": "3C PROJECT", "precio": 0},
-            {"codigo": "COC-3C-02", "nombre": "3C ELEGANCE", "precio": 5121.90},
-            {"codigo": "COC-3C-03", "nombre": "3C PREMIUM", "precio": 7270.30}
+            {
+              "codigo": "COC-3C-01",
+              "nombre": "3C PROJECT",
+              "precio": 0
+            },
+            {
+              "codigo": "COC-3C-02",
+              "nombre": "3C ELEGANCE",
+              "precio": 5121.90
+            },
+            {
+              "codigo": "COC-3C-03",
+              "nombre": "3C PREMIUM",
+              "precio": 7270.30
+            }
           ]
         }
       ]
@@ -114,82 +272,238 @@
       "categoria": "DORMITORIOS - Armarios empotrados",
       "codigo": "ARMARIOS",
       "items": [
-        {"codigo": "ARM-2H", "concepto": "Armario 2 hojas abatibles (1,00-1,20m)", "precio": 1093.75, "cantidad_tipo": "unidades"},
-        {"codigo": "ARM-3H", "concepto": "Armario 3 hojas abatibles (1,30-1,80m)", "precio": 1475.00, "cantidad_tipo": "unidades"},
-        {"codigo": "ARM-4H", "concepto": "Armario 4 hojas abatibles (1,80-2,40m)", "precio": 1620.44, "cantidad_tipo": "unidades"}
+        {
+          "codigo": "ARM-2H",
+          "concepto": "Armario 2 hojas abatibles (1,00-1,20m)",
+          "precio": 1093.75,
+          "cantidad_tipo": "unidades"
+        },
+        {
+          "codigo": "ARM-3H",
+          "concepto": "Armario 3 hojas abatibles (1,30-1,80m)",
+          "precio": 1475.00,
+          "cantidad_tipo": "unidades"
+        },
+        {
+          "codigo": "ARM-4H",
+          "concepto": "Armario 4 hojas abatibles (1,80-2,40m)",
+          "precio": 1620.44,
+          "cantidad_tipo": "unidades"
+        }
       ]
     },
     {
       "categoria": "BAÑOS - Muebles y espejos",
       "codigo": "MUEBLES_BAÑO",
       "items": [
-        {"codigo": "MUE-PRINC-80", "concepto": "Mueble+espejo baño principal 80cm", "precio": 986.00, "cantidad_tipo": "si/no", "opciones_extra": ["ECD-Roble", "NGY-Gris", "NWT-Blanco"]},
-        {"codigo": "MUE-PASILLO-60", "concepto": "Mueble+espejo baño pasillo 60cm", "precio": 893.75, "cantidad_tipo": "si/no", "opciones_extra": ["ECD-Roble", "NGY-Gris", "NWT-Blanco"]}
+        {
+          "codigo": "MUE-PRINC-80",
+          "concepto": "Mueble+espejo baño principal 80cm",
+          "precio": 986.00,
+          "cantidad_tipo": "si/no",
+          "opciones_extra": [
+            "ECD-Roble",
+            "NGY-Gris",
+            "NWT-Blanco"
+          ]
+        },
+        {
+          "codigo": "MUE-PASILLO-60",
+          "concepto": "Mueble+espejo baño pasillo 60cm",
+          "precio": 893.75,
+          "cantidad_tipo": "si/no",
+          "opciones_extra": [
+            "ECD-Roble",
+            "NGY-Gris",
+            "NWT-Blanco"
+          ]
+        }
       ]
     },
     {
       "categoria": "BAÑOS - Mamparas",
       "codigo": "MAMPARAS",
       "items": [
-        {"codigo": "MAMP-DUCHA-100", "concepto": "Mampara ducha Walk-in 100", "precio": 995.25, "cantidad_tipo": "si/no"},
-        {"codigo": "MAMP-BAÑERA-SARA", "concepto": "Mampara bañera Sara abatible", "precio": 618.75, "cantidad_tipo": "si/no"},
-        {"codigo": "CAMBIO-BAÑ-DUCH", "concepto": "Cambio bañera por ducha", "precio": 833.00, "cantidad_tipo": "si/no"}
+        {
+          "codigo": "MAMP-DUCHA-100",
+          "concepto": "Mampara ducha Walk-in 100",
+          "precio": 995.25,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "MAMP-BAÑERA-SARA",
+          "concepto": "Mampara bañera Sara abatible",
+          "precio": 618.75,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "CAMBIO-BAÑ-DUCH",
+          "concepto": "Cambio bañera por ducha",
+          "precio": 833.00,
+          "cantidad_tipo": "si/no"
+        }
       ]
     },
     {
       "categoria": "BAÑOS - Griferías",
       "codigo": "GRIFERIAS",
       "items": [
-        {"codigo": "GRIF-INTIMIXER", "concepto": "Grifo intimixer", "precio": 893.75, "cantidad_tipo": "si/no"},
-        {"codigo": "GRIF-TERM-DUCHA", "concepto": "Columna termostática ducha July+", "precio": 598.55, "cantidad_tipo": "si/no"},
-        {"codigo": "GRIF-TERM-BAÑERA", "concepto": "Grifería termostática bañera July+", "precio": 242.78, "cantidad_tipo": "si/no"}
+        {
+          "codigo": "GRIF-INTIMIXER",
+          "concepto": "Grifo intimixer",
+          "precio": 893.75,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "GRIF-TERM-DUCHA",
+          "concepto": "Columna termostática ducha July+",
+          "precio": 598.55,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "GRIF-TERM-BAÑERA",
+          "concepto": "Grifería termostática bañera July+",
+          "precio": 242.78,
+          "cantidad_tipo": "si/no"
+        }
       ]
     },
     {
       "categoria": "ILUMINACIÓN",
       "codigo": "ILUMINACION",
       "items": [
-        {"codigo": "LUZ-PKG-COCINA", "concepto": "Paquete light cocina+baños (7 focos)", "precio": 687.50, "cantidad_tipo": "si/no"},
-        {"codigo": "LUZ-ESPEJO-BAÑO", "concepto": "Punto luz espejo baño", "precio": 237.50, "cantidad_tipo": "unidades"},
-        {"codigo": "LUZ-PKG-PASILLO", "concepto": "Paquete light pasillo (6 focos)", "precio": 525.00, "cantidad_tipo": "si/no"}
+        {
+          "codigo": "LUZ-PKG-COCINA",
+          "concepto": "Paquete light cocina+baños (7 focos)",
+          "precio": 687.50,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "LUZ-ESPEJO-BAÑO",
+          "concepto": "Punto luz espejo baño",
+          "precio": 237.50,
+          "cantidad_tipo": "unidades"
+        },
+        {
+          "codigo": "LUZ-PKG-PASILLO",
+          "concepto": "Paquete light pasillo (6 focos)",
+          "precio": 525.00,
+          "cantidad_tipo": "si/no"
+        }
       ]
     },
     {
       "categoria": "SUELOS - Cambios",
       "codigo": "SUELOS",
       "items": [
-        {"codigo": "SUELO-GRES-PORT", "concepto": "Cambio laminado → gres porcelánico", "precio": 2313.94, "cantidad_tipo": "si/no", "opciones_extra": ["Vilema Blanco", "Vilema Beige", "Vilema Taupe", "Vilema Roble"]},
-        {"codigo": "SUELO-AC5", "concepto": "Cambio laminado AC4 → AC5", "precio": 656.25, "cantidad_tipo": "si/no"}
+        {
+          "codigo": "SUELO-GRES-PORT",
+          "concepto": "Cambio laminado → gres porcelánico",
+          "precio": 2313.94,
+          "cantidad_tipo": "si/no",
+          "opciones_extra": [
+            "Vilema Blanco",
+            "Vilema Beige",
+            "Vilema Taupe",
+            "Vilema Roble"
+          ]
+        },
+        {
+          "codigo": "SUELO-AC5",
+          "concepto": "Cambio laminado AC4 → AC5",
+          "precio": 656.25,
+          "cantidad_tipo": "si/no"
+        }
       ]
     },
     {
       "categoria": "VENTANAS - Mejoras",
       "codigo": "VENTANAS",
       "items": [
-        {"codigo": "VENT-OSCILO-TODAS", "concepto": "Apertura oscilobatiente todas ventanas", "precio": 437.50, "cantidad_tipo": "si/no"},
-        {"codigo": "PERS-MOTOR-UNIT", "concepto": "Motorización persiana", "precio": 595.00, "cantidad_tipo": "unidades"},
-        {"codigo": "MOSQ-VERT-ENROLL", "concepto": "Mosquitera enrollable vertical", "precio": 375.00, "cantidad_tipo": "unidades"},
-        {"codigo": "MOSQ-LAT-ENROLL", "concepto": "Mosquitera enrollable lateral", "precio": 625.00, "cantidad_tipo": "unidades"}
+        {
+          "codigo": "VENT-OSCILO-TODAS",
+          "concepto": "Apertura oscilobatiente todas ventanas",
+          "precio": 437.50,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "PERS-MOTOR-UNIT",
+          "concepto": "Motorización persiana",
+          "precio": 595.00,
+          "cantidad_tipo": "unidades"
+        },
+        {
+          "codigo": "MOSQ-VERT-ENROLL",
+          "concepto": "Mosquitera enrollable vertical",
+          "precio": 375.00,
+          "cantidad_tipo": "unidades"
+        },
+        {
+          "codigo": "MOSQ-LAT-ENROLL",
+          "concepto": "Mosquitera enrollable lateral",
+          "precio": 625.00,
+          "cantidad_tipo": "unidades"
+        }
       ]
     },
     {
       "categoria": "REFUERZOS",
       "codigo": "REFUERZOS",
       "items": [
-        {"codigo": "REF-PLADUR-COCINA", "concepto": "Refuerzo pladur muebles cocina", "precio": 200.00, "cantidad_tipo": "si/no"},
-        {"codigo": "REF-PLADUR-SALON", "concepto": "Refuerzo pladur muebles salón", "precio": 350.00, "cantidad_tipo": "si/no"}
+        {
+          "codigo": "REF-PLADUR-COCINA",
+          "concepto": "Refuerzo pladur muebles cocina",
+          "precio": 200.00,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "REF-PLADUR-SALON",
+          "concepto": "Refuerzo pladur muebles salón",
+          "precio": 350.00,
+          "cantidad_tipo": "si/no"
+        }
       ]
     },
     {
       "categoria": "CIERRE COCINA",
       "codigo": "CIERRE_COCINA",
       "items": [
-        {"codigo": "CIERRE-COC-1ADAE", "concepto": "Cerramiento cocina 1AD/2AD/3AE", "precio": 1676.35, "cantidad_tipo": "si/no"},
-        {"codigo": "CIERRE-COC-2BC", "concepto": "Cerramiento cocina 2BC", "precio": 2019.35, "cantidad_tipo": "si/no"},
-        {"codigo": "CIERRE-COC-3C", "concepto": "Cerramiento cocina 3C", "precio": 2428.30, "cantidad_tipo": "si/no"},
-        {"codigo": "ALIC-COC-1ADAE", "concepto": "Alicatado cocina cerrada 1AD/2AD/3AE", "precio": 2265.12, "cantidad_tipo": "si/no"},
-        {"codigo": "ALIC-COC-2BC", "concepto": "Alicatado cocina cerrada 2BC", "precio": 2435.00, "cantidad_tipo": "si/no"},
-        {"codigo": "ALIC-COC-3C", "concepto": "Alicatado cocina cerrada 3C", "precio": 2491.63, "cantidad_tipo": "si/no"}
+        {
+          "codigo": "CIERRE-COC-1ADAE",
+          "concepto": "Cerramiento cocina 1AD/2AD/3AE",
+          "precio": 1676.35,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "CIERRE-COC-2BC",
+          "concepto": "Cerramiento cocina 2BC",
+          "precio": 2019.35,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "CIERRE-COC-3C",
+          "concepto": "Cerramiento cocina 3C",
+          "precio": 2428.30,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "ALIC-COC-1ADAE",
+          "concepto": "Alicatado cocina cerrada 1AD/2AD/3AE",
+          "precio": 2265.12,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "ALIC-COC-2BC",
+          "concepto": "Alicatado cocina cerrada 2BC",
+          "precio": 2435.00,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "ALIC-COC-3C",
+          "concepto": "Alicatado cocina cerrada 3C",
+          "precio": 2491.63,
+          "cantidad_tipo": "si/no"
+        }
       ]
     }
   ]
