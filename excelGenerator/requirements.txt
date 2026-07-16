@@ -3,3 +3,6 @@ openpyxl==3.1.2
 
 # Progress bars for batch processing
 tqdm==4.66.1
+
+# PDF reading for mejoras catalog
+pypdf2==3.0.1

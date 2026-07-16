@@ -15,7 +15,14 @@ STARK096—ALDEA genera plantillas Excel con 91 viviendas distribuidas en 3 esca
 - **91 Viviendas**: Escalera 1 (28), Escalera 2 (28), Escalera 3 (35)
 - **Nombres Graciosos**: Compradores con nombres de perritos (Firulais Ladrón Guardián, etc.)
 - **2 Compradores**: ~40 viviendas tienen 2 compradores
-- **Excel Final**: Genera un Excel con una pestaña por vivienda
+- **Excel Final con Mejoras**: Sistema completo de personalización de viviendas
+  - Hoja Resumen con todas las viviendas
+  - Hoja Resumen Constructora para pedidos
+  - 91 hojas individuales con tabla de conceptos
+  - Desplegables de validación de datos
+  - Fórmulas automáticas de cálculo
+  - Validaciones según tipo de vivienda
+- **Catálogo de Mejoras**: 11 categorías con +50 opciones del PDF oficial
 - **Entorno Dockerizado**: Ejecución aislada y reproducible
 - **Interfaz de Menú**: Sistema de menús interactivo con `menu.sh`
 
@@ -26,11 +33,15 @@ STARK096---ALDEA/
 ├── menu.sh                      # Menú principal (source menu.sh)
 ├── Dockerfile                   # Definición del contenedor Python
 ├── README.md                    # Este archivo
+├── dosier/                      # Documentos fuente
+│   └── 6_LISTADO MEJORAS Neptuno C63.pdf
 └── excelGenerator/              # Código Python
-    ├── requirements.txt         # Dependencias Python
+    ├── requirements.txt         # Dependencias (openpyxl, pypdf2, tqdm)
     ├── excel_template_generator.py   # Generador de plantillas
-    ├── generate_final_sheets.py      # Generador de Excel final
+    ├── generate_final_sheets.py      # Generador de Excel final ⭐
+    ├── read_pdf_mejoras.py           # Lector de catálogo PDF
     ├── utils.py                 # Utilidades comunes
+    ├── mejoras_catalog.json     # Catálogo estructurado de mejoras
     ├── output/                  # Plantillas base generadas
     └── output_final/            # Excel final con pestañas
 ```
@@ -68,14 +79,47 @@ STARK096---ALDEA/
 ## 📋 Ficheros Generados
 
 ### 1. Plantilla Base (output/)
-Excel con todas las viviendas y compradores en una sola hoja:
-- Columnas: Identificador, Piso, Comprador 1 (Nombre, Apellido1, Apellido2), Comprador 2 (Nombre, Apellido1, Apellido2)
-- 91 filas de datos + 1 cabecera
+Excel con todas las viviendas y co ⭐ COMPLETO
 
-### 2. Excel Final (output_final/)
-Excel con pestañas individuales:
-- **Pestaña "Resumen"**: Estadísticas generales del proyecto
-- **91 Pestañas**: Una por vivienda, nombre = columna "Piso" del original
+**Hoja "Resumen":**
+- Listado de todas las viviendas
+- Columnas: Comprador 1 (3 cols), Comprador 2 (3 cols), Piso, Total Gastado, Max Módulo, Sobrante
+- Fórmulas automáticas que referencian las hojas individuales
+- Cálculo de Sobrante = Max Módulo - Total Gastado
+
+**Hoja "Resumen Constructora":**
+- Listado de obra para pedidos a constructora
+- Columnas: Código, Concepto, Cantidad Total
+- Agregación de cantidades de todas las viviendas
+
+**91 Hojas Individuales (una por vivienda):**
+Cada hoja incluye:
+
+1. **Header "FICHA DE CLIENTE"**:
+   - Nombre y apellidos del/los comprador(es)
+   - Identificación de vivienda (formato E1 4A)
+   - Total Gastado con fórmula automática
+
+2. **Tabla de Conceptos**:
+   - Concepto | Selección | Precio (€) | Cantidad | Seleccionado (Sí/No) | Importe (€)
+   - **Desplegables de validación** en columna Selección
+   - **Validaciones condicionales**: Opciones de cocina según tipo de vivienda
+   - **Fórmulas automáticas**: Importe = IF(Seleccionado="Sí", Precio × Cantidad, 0)
+   - Fila TOTAL con suma de todos los importes
+
+3. **Conceptos Incluidos**:
+   - Pasos básicos: Carpintería Interior, Suelo Laminado, Baño General, Baño Suite, Cocina
+   - Mejoras: Armarios empotrados, Muebles baño, Mamparas, Griferías, Iluminación, Suelos, Ventanas, Refuerzos, Cierre cocina
+   - Total: ~12 conceptos configurables por vivienda
+
+## 🎯 Catálogo de Mejoras
+
+El sistema lee automáticamente el catálogo desde `dosier/6_LISTADO MEJORAS Neptuno C63.pdf`:
+
+- **11 categorías** de mejoras
+- **+50 conceptos** con precios
+- **Validaciones por tipo de vivienda**: Las opciones de cocina se adaptan automáticamente según el tipo (1AD, 2AD, 3AE, 1BC, 2BC, 3BD, 3C)
+- **Precios actualizados** desde el PDF oficial (rangos desde 0€ hasta 7.889€)mbre = columna "Piso" del original
 - **Contenido de cada pestaña**:
   - Cabecera con nombre(s) del/los comprador(es)
   - Identificación de vivienda
