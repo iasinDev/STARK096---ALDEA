@@ -5,11 +5,9 @@ Generates parametric Excel templates for construction company
 """
 
 import openpyxl
-from datetime import datetime
 import os
 import random
 from utils import (
-    load_config,
     create_output_dir,
     get_timestamp,
     apply_header_style,
@@ -151,9 +149,6 @@ def create_template():
     
     print_info("Creating Excel template with 91 viviendas...")
     
-    # Load configuration
-    config = load_config()
-    
     # Generate housing data
     print_info("Generating housing data with funny dog names...")
     viviendas = generate_housing_data()
@@ -175,11 +170,11 @@ def create_template():
         "Comprador 2 - Apellido 2"
     ]
     
-    # Write headers with style from configuration
+    # Write headers with style
     for col, header in enumerate(headers, start=1):
         cell = ws.cell(row=1, column=col)
         cell.value = header
-        apply_header_style(cell, config)
+        apply_header_style(cell)
     
     # Write data for all 91 viviendas
     print_info(f"Writing {len(viviendas)} housing units to Excel...")
