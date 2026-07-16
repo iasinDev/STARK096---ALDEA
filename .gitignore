@@ -6,6 +6,8 @@ __pycache__/
 # Output files
 excelGenerator/output/*.xlsx
 !excelGenerator/output/.gitkeep
+excelGenerator/output_final/*.xlsx
+!excelGenerator/output_final/.gitkeep
 
 # IDEs
 .vscode/

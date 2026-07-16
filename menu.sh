@@ -249,6 +249,9 @@ show_excel_menu() {
         echo -e "${CYAN} ${GREEN}1.${NC} ${HOUSE} Generate Excel Template                          ${NC}"
         echo -e "      ↳ Crear plantilla base para constructora            ${NC}"
         echo ""
+        echo -e "${CYAN} ${GREEN}2.${NC} 📋 Generate Final Sheets                             ${NC}"
+        echo -e "      ↳ Generar Excel final con pestañas individuales    ${NC}"
+        echo ""
         echo -e "${CYAN} ${GREEN}0.${NC} ${EXIT} Back to Main Menu                               ${NC}"
         echo -e "${CYAN}================================================================${NC}"
         echo ""
@@ -268,8 +271,22 @@ show_excel_menu() {
                 fi
                 pause
                 ;;
+            2)
+                show_header
+                echo -e "${GREEN}📋 Generating final Excel with individual sheets...${NC}"
+                echo ""
+                safe_run_python generate_final_sheets.py
+                exit_code=$?
+                echo ""
+                if [ $exit_code -eq 0 ]; then
+                    echo -e "${GREEN}${CHECK} Final Excel generated successfully!${NC}"
+                else
+                    echo -e "${RED}${EXIT} Final Excel generation failed (exit code: $exit_code)${NC}"
+                fi
+                pause
+                ;;
             0) return ;;
-            *) echo -e "${RED}${EXIT} Invalid option. Please choose 0-1.${NC}"; pause ;;
+            *) echo -e "${RED}${EXIT} Invalid option. Please choose 0-2.${NC}"; pause ;;
         esac
     done
 }
