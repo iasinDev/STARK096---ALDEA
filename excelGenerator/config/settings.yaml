@@ -1,0 +1,13 @@
+company:
+  address: Calle Principal, 123
+  email: info@aldea.com
+  name: CONSTRUCTORA ALDEA
+  phone: +34 900 000 000
+defaults:
+  currency: EUR
+  date_format: DD/MM/YYYY
+  decimal_separator: ','
+paths:
+  input: input/
+  output: output/
+  templates: templates/

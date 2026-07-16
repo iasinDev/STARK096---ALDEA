@@ -1,0 +1,183 @@
+# Ejemplo de Datos de Viviendas
+# Formato: YAML
+# Este archivo puede ser procesado por el batch_processor.py
+
+proyecto:
+  nombre: "Residencial Los Álamos"
+  ubicacion: "Madrid, España"
+  fecha_inicio: "2026-01-15"
+  fecha_entrega: "2027-06-30"
+  promotor: "CONSTRUCTORA ALDEA"
+
+bloques:
+  - nombre: "Bloque A"
+    plantas: 5
+    viviendas_por_planta: 4
+  - nombre: "Bloque B"
+    plantas: 6
+    viviendas_por_planta: 4
+  - nombre: "Bloque C"
+    plantas: 4
+    viviendas_por_planta: 2
+
+viviendas:
+  # Bloque A - Planta 1
+  - id: "VIV-A101"
+    bloque: "A"
+    piso: 1
+    puerta: "A"
+    tipo: "2D"
+    superficie: 85.5
+    precio: 185000
+    estado: "Disponible"
+    orientacion: "Sur"
+    garaje: true
+    trastero: true
+    terraza: 12.0
+    
+  - id: "VIV-A102"
+    bloque: "A"
+    piso: 1
+    puerta: "B"
+    tipo: "3D"
+    superficie: 105.2
+    precio: 235000
+    estado: "Reservada"
+    orientacion: "Norte"
+    garaje: true
+    trastero: true
+    terraza: 15.0
+    
+  - id: "VIV-A103"
+    bloque: "A"
+    piso: 1
+    puerta: "C"
+    tipo: "2D"
+    superficie: 87.3
+    precio: 190000
+    estado: "Disponible"
+    orientacion: "Este"
+    garaje: true
+    trastero: false
+    terraza: 10.0
+    
+  - id: "VIV-A104"
+    bloque: "A"
+    piso: 1
+    puerta: "D"
+    tipo: "1D"
+    superficie: 62.8
+    precio: 145000
+    estado: "Vendida"
+    orientacion: "Oeste"
+    garaje: false
+    trastero: true
+    terraza: 8.0
+    
+  # Bloque A - Planta 2
+  - id: "VIV-A201"
+    bloque: "A"
+    piso: 2
+    puerta: "A"
+    tipo: "2D"
+    superficie: 85.5
+    precio: 190000
+    estado: "Disponible"
+    orientacion: "Sur"
+    garaje: true
+    trastero: true
+    terraza: 12.0
+    
+  - id: "VIV-A202"
+    bloque: "A"
+    piso: 2
+    puerta: "B"
+    tipo: "3D"
+    superficie: 105.2
+    precio: 240000
+    estado: "Disponible"
+    orientacion: "Norte"
+    garaje: true
+    trastero: true
+    terraza: 15.0
+    
+  # Bloque B - Ático
+  - id: "VIV-B601"
+    bloque: "B"
+    piso: 6
+    puerta: "A"
+    tipo: "ATICO"
+    superficie: 145.5
+    precio: 385000
+    estado: "Disponible"
+    orientacion: "Sur"
+    garaje: true
+    trastero: true
+    terraza: 55.0
+    
+  - id: "VIV-B602"
+    bloque: "B"
+    piso: 6
+    puerta: "B"
+    tipo: "ATICO"
+    superficie: 152.8
+    precio: 395000
+    estado: "Reservada"
+    orientacion: "Norte"
+    garaje: true
+    trastero: true
+    terraza: 60.0
+    
+  # Bloque C - Dúplex
+  - id: "VIV-C401"
+    bloque: "C"
+    piso: 4
+    puerta: "A"
+    tipo: "DUPLEX"
+    superficie: 165.0
+    precio: 425000
+    estado: "Disponible"
+    orientacion: "Sur-Este"
+    garaje: true
+    trastero: true
+    terraza: 45.0
+    
+  - id: "VIV-C402"
+    bloque: "C"
+    piso: 4
+    puerta: "B"
+    tipo: "DUPLEX"
+    superficie: 168.5
+    precio: 435000
+    estado: "En Construcción"
+    orientacion: "Sur-Oeste"
+    garaje: true
+    trastero: true
+    terraza: 48.0
+
+caracteristicas_comunes:
+  - "Calefacción central"
+  - "Aire acondicionado"
+  - "Cocina amueblada"
+  - "Armarios empotrados"
+  - "Puerta blindada"
+  - "Ventanas doble acristalamiento"
+  - "Portal con videoportero"
+  - "Ascensor"
+  - "Piscina comunitaria"
+  - "Zonas verdes"
+  - "Parking comunitario"
+
+zonas_comunes:
+  - nombre: "Piscina"
+    superficie: 250.0
+    estado: "Planificada"
+  - nombre: "Gimnasio"
+    superficie: 85.0
+    estado: "En Construcción"
+  - nombre: "Sala de juegos"
+    superficie: 45.0
+    estado: "Planificada"
+  - nombre: "Parking subterráneo"
+    plazas: 120
+    plantas: 2
