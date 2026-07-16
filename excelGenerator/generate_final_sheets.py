@@ -212,7 +212,7 @@ def create_header_box(ws, vivienda):
     cell_value.border = border_style
     cell_value.alignment = right_align
     
-    cell_currency = ws.cell(row=current_row, column=4, value="€ + IVA")
+    cell_currency = ws.cell(row=current_row, column=4, value="+ IVA")
     cell_currency.font = value_font
     cell_currency.fill = total_fill
     cell_currency.border = border_style
