@@ -186,11 +186,6 @@ def generate_real_sheets():
         print_info("  Creating constructor summary sheet...")
         create_constructor_summary_sheet(wb)
 
-        origin_header = (
-            f"{input_basename} \u2014 "
-            f"{os.path.basename(os.path.dirname(os.path.abspath(input_file)))}"
-        )
-
         print_info(f"  Creating {len(viviendas)} individual sheets...")
         for idx, vivienda in enumerate(viviendas, start=1):
             piso       = vivienda.get("Piso", f"Vivienda_{idx}")
@@ -199,6 +194,8 @@ def generate_real_sheets():
                           .replace(" - Planta ", " ")
                           .replace(" - Puerta ", ""))
             sheet_name = piso_short[:31]
+
+            origin_header = f"{input_basename} \u2014 {piso_short}"
 
             print_info(f"    Sheet {idx}/{len(viviendas)}: {sheet_name}")
             ws = wb.create_sheet(title=sheet_name)
