@@ -8,6 +8,7 @@ import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.formatting.rule import FormulaRule
+from openpyxl.worksheet.properties import PageSetupProperties
 import os
 import glob
 import json
@@ -75,10 +76,115 @@ def read_housing_data(filepath):
         return None
 
 
+def create_cuadro_mandos_sheet(wb):
+    """Create the Cuadro de Mandos dashboard as the first sheet (uses wb.active)."""
+    ws = wb.active
+    ws.title = "Cuadro de mandos"
+
+    title_fill    = PatternFill(start_color="1F4E79", end_color="1F4E79", fill_type="solid")
+    title_font    = Font(bold=True, size=16, name="Calibri", color="FFFFFF")
+    section_fill  = PatternFill(start_color="2E75B6", end_color="2E75B6", fill_type="solid")
+    section_font  = Font(bold=True, size=11, name="Calibri", color="FFFFFF")
+    button_fill   = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    button_font   = Font(bold=True, size=13, name="Calibri", color="FFFFFF")
+    button_border = Border(
+        left=Side(style='medium', color='1F4E79'),
+        right=Side(style='medium', color='1F4E79'),
+        top=Side(style='medium', color='1F4E79'),
+        bottom=Side(style='medium', color='1F4E79'),
+    )
+    note_font  = Font(italic=True, size=9, name="Calibri", color="595959")
+    code_font  = Font(name="Courier New", size=8, color="595959")
+    center_al  = Alignment(horizontal="center", vertical="center")
+    left_al    = Alignment(horizontal="left",   vertical="center")
+
+    ws.column_dimensions['A'].width = 3
+    ws.column_dimensions['B'].width = 5
+    for _cl in ['C', 'D', 'E', 'F', 'G']:
+        ws.column_dimensions[_cl].width = 22
+    ws.column_dimensions['H'].width = 3
+
+    ws.row_dimensions[1].height  = 42
+    ws.row_dimensions[2].height  = 10
+    ws.row_dimensions[3].height  = 22
+    ws.row_dimensions[4].height  = 8
+    ws.row_dimensions[5].height  = 28
+    ws.row_dimensions[6].height  = 28
+    ws.row_dimensions[7].height  = 28
+    ws.row_dimensions[8].height  = 12
+    ws.row_dimensions[9].height  = 18
+    ws.row_dimensions[10].height = 180
+
+    def _fill_cols(row, col_start, col_end, fill, border=None):
+        for _c in range(col_start, col_end + 1):
+            _cell = ws.cell(row=row, column=_c)
+            _cell.fill = fill
+            if border:
+                _cell.border = border
+
+    # Row 1: main title
+    ws.merge_cells('B1:G1')
+    c = ws['B1']
+    c.value = "\U0001f4ca  CUADRO DE MANDOS"
+    c.font = title_font; c.fill = title_fill; c.alignment = center_al
+    _fill_cols(1, 3, 7, title_fill)
+
+    # Row 3: section header
+    ws.merge_cells('B3:G3')
+    c = ws['B3']
+    c.value = "   \U0001f5a8\ufe0f  IMPRESI\u00d3N"
+    c.font = section_font; c.fill = section_fill
+    c.alignment = Alignment(horizontal="left", vertical="center")
+    _fill_cols(3, 3, 7, section_fill)
+
+    # Rows 5-7: print button
+    ws.merge_cells('B5:G7')
+    c = ws['B5']
+    c.value = "\U0001f5a8\ufe0f   Imprimir fichas de cliente"
+    c.font = button_font; c.fill = button_fill
+    c.alignment = center_al; c.border = button_border
+    for _r in [5, 6, 7]:
+        _fill_cols(_r, 3, 7, button_fill, button_border)
+
+    # Row 9: usage note
+    ws.merge_cells('B9:G9')
+    c = ws['B9']
+    c.value = ("\u2139\ufe0f  Para activar: Alt+F11 \u2192 Insertar m\u00f3dulo \u2192 pegar c\u00f3digo "
+               "\u2192 clic derecho bot\u00f3n \u2192 Asignar macro \u2192 ImprimirFichasCliente")
+    c.font = note_font; c.alignment = left_al
+
+    # Row 10: VBA code block (single tall row for easy copy-paste)
+    ws.merge_cells('B10:G10')
+    _vba = (
+        "Sub ImprimirFichasCliente()\n"
+        "    Dim excluidas As Variant\n"
+        "    excluidas = Array(\"Cuadro de mandos\", \"Resumen\", \"Resumen Constructora\")\n"
+        "    Dim hojas() As String: Dim n As Integer: n = 0\n"
+        "    Dim ws As Worksheet\n"
+        "    For Each ws In ThisWorkbook.Sheets\n"
+        "        Dim skip As Boolean: skip = False\n"
+        "        Dim i As Integer\n"
+        "        For i = 0 To UBound(excluidas)\n"
+        "            If ws.Name = excluidas(i) Then skip = True: Exit For\n"
+        "        Next i\n"
+        "        If Not skip Then ReDim Preserve hojas(n): hojas(n) = ws.Name: n = n + 1\n"
+        "    Next ws\n"
+        "    If n = 0 Then MsgBox \"No hay fichas de cliente.\": Exit Sub\n"
+        "    ThisWorkbook.Sheets(hojas).Select\n"
+        "    ActiveWindow.SelectedSheets.PrintOut Copies:=1\n"
+        "    ThisWorkbook.Sheets(\"Cuadro de mandos\").Select\n"
+        "    MsgBox n & \" fichas enviadas a impresora.\", vbInformation\n"
+        "End Sub"
+    )
+    c = ws['B10']
+    c.value = _vba
+    c.font = code_font
+    c.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+
+
 def create_summary_sheet(wb, viviendas):
     """Create the summary sheet with all viviendas - estilo a.png"""
-    ws = wb.active
-    ws.title = "Resumen"
+    ws = wb.create_sheet(title="Resumen", index=1)
     
     # Define styles
     header_font = Font(bold=True, size=11, name="Calibri", color="FFFFFF")
@@ -182,7 +288,7 @@ def create_summary_sheet(wb, viviendas):
 
 def create_constructor_summary_sheet(wb):
     """Create constructor summary sheet with aggregated items (headers only)"""
-    ws = wb.create_sheet(title="Resumen Constructora", index=1)
+    ws = wb.create_sheet(title="Resumen Constructora", index=2)
     
     # Define styles
     header_font = Font(bold=True, size=11, name="Calibri", color="FFFFFF")
@@ -287,154 +393,179 @@ def populate_constructor_summary(wb, catalog, viviendas):
     print_info(f"Created {mejora_idx} direct-reference formula rows (mejoras only)")
 
 
-def create_header_box(ws, vivienda):
-    """Create the header box - FICHA DE CLIENTE"""
-    
-    title_fill = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
-    title_font = Font(bold=True, size=12, name="Calibri", color="FFFFFF")
-    
-    label_font = Font(bold=True, size=11, name="Calibri", color="000000")
-    value_font = Font(size=11, name="Calibri", color="000000")
-    
-    total_fill = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
-    total_font = Font(bold=True, size=11, name="Calibri", color="000000")
-    
+def create_header_box(ws, vivienda, origin_header=None):
+    """Create the header box — FICHA DE CLIENTE.
+
+    Layout (columns A–F, always 7 rows so TOTAL GASTADO is always at C7):
+      Row 1: FICHA DE CLIENTE (A:C) | origin info (D:F) — or A:F if no origin
+      Row 2: label (A:B) | comprador 1 full name (C:F)
+      Row 3: empty label (A:B) | comprador 2 name or empty (C:F)  [always present]
+      Row 4: separator (A:F)
+      Row 5: Vivienda label (A:B) | piso value (C:F)
+      Row 6: empty full-width (A:F)
+      Row 7: TOTAL GASTADO label (A:B) | value cell (C:D) | € + IVA (E:F)
+    """
+    title_fill   = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
+    title_font   = Font(bold=True, size=12, name="Calibri", color="FFFFFF")
+    origin_font  = Font(italic=True, size=9,  name="Calibri", color="EEEEEE")
+    label_font   = Font(bold=True, size=11, name="Calibri", color="000000")
+    value_font   = Font(size=11, name="Calibri", color="000000")
+    total_fill   = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+    total_font   = Font(bold=True, size=11, name="Calibri", color="000000")
     border_style = Border(
         left=Side(style='thin', color='000000'),
         right=Side(style='thin', color='000000'),
         top=Side(style='thin', color='000000'),
         bottom=Side(style='thin', color='000000')
     )
-    
     center_align = Alignment(horizontal="center", vertical="center")
-    left_align = Alignment(horizontal="left", vertical="center")
-    right_align = Alignment(horizontal="right", vertical="center")
-    
+    left_align   = Alignment(horizontal="left",   vertical="center")
+    right_align  = Alignment(horizontal="right",  vertical="center")
+
+    def _brow(row, col_start, col_end, fill=None):
+        """Apply border (and optional fill) to cols col_start..col_end in row."""
+        for _c in range(col_start, col_end + 1):
+            _cell = ws.cell(row=row, column=_c)
+            _cell.border = border_style
+            if fill:
+                _cell.fill = fill
+
     current_row = 1
-    
-    # FICHA DE CLIENTE
-    ws.merge_cells(f'A{current_row}:D{current_row}')
-    cell = ws.cell(row=current_row, column=1, value="FICHA DE CLIENTE")
-    cell.font = title_font
-    cell.fill = title_fill
-    cell.border = border_style
-    cell.alignment = center_align
-    for col in range(2, 5):
-        ws.cell(row=current_row, column=col).border = border_style
+
+    # ── Row 1: FICHA DE CLIENTE + optional origin ──────────────────────────
+    if origin_header:
+        ws.merge_cells(f'A{current_row}:C{current_row}')
+        cell = ws.cell(row=current_row, column=1, value="FICHA DE CLIENTE")
+        cell.font = title_font; cell.fill = title_fill
+        cell.border = border_style; cell.alignment = center_align
+        _brow(current_row, 2, 3, title_fill)
+
+        ws.merge_cells(f'D{current_row}:F{current_row}')
+        cell_o = ws.cell(row=current_row, column=4, value=origin_header)
+        cell_o.font = origin_font; cell_o.fill = title_fill
+        cell_o.border = border_style
+        cell_o.alignment = Alignment(horizontal="right", vertical="center")
+        _brow(current_row, 5, 6, title_fill)
+    else:
+        ws.merge_cells(f'A{current_row}:F{current_row}')
+        cell = ws.cell(row=current_row, column=1, value="FICHA DE CLIENTE")
+        cell.font = title_font; cell.fill = title_fill
+        cell.border = border_style; cell.alignment = center_align
+        _brow(current_row, 2, 6, title_fill)
     current_row += 1
-    
-    # Nombres y Apellidos
+
+    # ── Row 2: Comprador 1 ────────────────────────────────────────────────
     comprador1_nombre = vivienda.get("Comprador 1 - Nombre")
-    comprador1_ap1 = vivienda.get("Comprador 1 - Apellido 1")
-    comprador1_ap2 = vivienda.get("Comprador 1 - Apellido 2")
-    
-    compradores_text = ""
-    if comprador1_nombre and comprador1_ap1 and comprador1_ap2:
-        compradores_text = f"{comprador1_nombre} {comprador1_ap1} {comprador1_ap2}"
-    
+    comprador1_ap1    = vivienda.get("Comprador 1 - Apellido 1")
+    comprador1_ap2    = vivienda.get("Comprador 1 - Apellido 2")
+    compradores_text  = (
+        f"{comprador1_nombre} {comprador1_ap1} {comprador1_ap2}"
+        if comprador1_nombre and comprador1_ap1 and comprador1_ap2 else ""
+    )
     comprador2_nombre = vivienda.get("Comprador 2 - Nombre")
-    comprador2_ap1 = vivienda.get("Comprador 2 - Apellido 1")
-    comprador2_ap2 = vivienda.get("Comprador 2 - Apellido 2")
-    
-    has_second_buyer = comprador2_nombre and comprador2_ap1 and comprador2_ap2
-    
+    comprador2_ap1    = vivienda.get("Comprador 2 - Apellido 1")
+    comprador2_ap2    = vivienda.get("Comprador 2 - Apellido 2")
+    has_second_buyer  = comprador2_nombre and comprador2_ap1 and comprador2_ap2
+
     ws.merge_cells(f'A{current_row}:B{current_row}')
-    cell_label = ws.cell(row=current_row, column=1, value="Nombre y Apellidos:")
-    cell_label.font = label_font
-    cell_label.border = border_style
-    cell_label.alignment = right_align
+    cl = ws.cell(row=current_row, column=1, value="Nombre y Apellidos:")
+    cl.font = label_font; cl.border = border_style; cl.alignment = right_align
     ws.cell(row=current_row, column=2).border = border_style
-    
+
+    ws.merge_cells(f'C{current_row}:F{current_row}')
+    cv = ws.cell(row=current_row, column=3, value=compradores_text)
+    cv.font = value_font; cv.border = border_style; cv.alignment = left_align
+    _brow(current_row, 4, 6)
+    current_row += 1
+
+    # ── Row 3: Comprador 2 (always present for fixed-row layout) ─────────
+    comprador2_text = (
+        f"{comprador2_nombre} {comprador2_ap1} {comprador2_ap2}"
+        if has_second_buyer else ""
+    )
+    ws.merge_cells(f'A{current_row}:B{current_row}')
+    ws.cell(row=current_row, column=1).border = border_style
+    ws.cell(row=current_row, column=2).border = border_style
+
+    ws.merge_cells(f'C{current_row}:F{current_row}')
+    cv = ws.cell(row=current_row, column=3, value=comprador2_text)
+    cv.font = value_font; cv.border = border_style; cv.alignment = left_align
+    _brow(current_row, 4, 6)
+    current_row += 1
+
+    # ── Row 4: Separator ─────────────────────────────────────────────────
+    ws.merge_cells(f'A{current_row}:F{current_row}')
+    ws.cell(row=current_row, column=1).border = border_style
+    _brow(current_row, 2, 6)
+    current_row += 1
+
+    # ── Row 5: Vivienda ──────────────────────────────────────────────────
+    piso           = vivienda.get("Piso", "")
+    vivienda_short = (piso.replace("Escalera ", "E")
+                         .replace(" - Planta ", " ")
+                         .replace(" - Puerta ", ""))
+    ws.merge_cells(f'A{current_row}:B{current_row}')
+    cl = ws.cell(row=current_row, column=1, value="Vivienda:")
+    cl.font = label_font; cl.border = border_style; cl.alignment = right_align
+    ws.cell(row=current_row, column=2).border = border_style
+
+    ws.merge_cells(f'C{current_row}:F{current_row}')
+    cv = ws.cell(row=current_row, column=3, value=vivienda_short)
+    cv.font = value_font; cv.border = border_style; cv.alignment = left_align
+    _brow(current_row, 4, 6)
+    current_row += 1
+
+    # ── Row 6: Empty full-width ──────────────────────────────────────────
+    ws.merge_cells(f'A{current_row}:F{current_row}')
+    ws.cell(row=current_row, column=1).border = border_style
+    _brow(current_row, 2, 6)
+    current_row += 1
+
+    # ── Row 7: TOTAL GASTADO (value always at C7 — formula reference target)
+    ws.merge_cells(f'A{current_row}:B{current_row}')
+    cl = ws.cell(row=current_row, column=1, value="TOTAL GASTADO:")
+    cl.font = total_font; cl.fill = total_fill
+    cl.border = border_style; cl.alignment = right_align
+    ws.cell(row=current_row, column=2).fill   = total_fill
+    ws.cell(row=current_row, column=2).border = border_style
+
+    # C:D merged — value cell (formula written later by create_mejoras_table at C{row})
     ws.merge_cells(f'C{current_row}:D{current_row}')
-    cell_value = ws.cell(row=current_row, column=3, value=compradores_text)
-    cell_value.font = value_font
-    cell_value.border = border_style
-    cell_value.alignment = left_align
+    cv = ws.cell(row=current_row, column=3, value="")
+    cv.fill = total_fill; cv.border = border_style
+    cv.alignment = right_align; cv.number_format = '#,##0.00'
+    ws.cell(row=current_row, column=4).fill   = total_fill
     ws.cell(row=current_row, column=4).border = border_style
-    current_row += 1
-    
-    # Second buyer row (always present for fixed layout — empty if no second buyer)
-    comprador2_text = ""
-    if has_second_buyer:
-        comprador2_text = f"{comprador2_nombre} {comprador2_ap1} {comprador2_ap2}"
-    
-    ws.merge_cells(f'A{current_row}:B{current_row}')
-    cell_label = ws.cell(row=current_row, column=1, value="")
-    cell_label.border = border_style
-    ws.cell(row=current_row, column=2).border = border_style
-    
-    ws.merge_cells(f'C{current_row}:D{current_row}')
-    cell_value = ws.cell(row=current_row, column=3, value=comprador2_text)
-    cell_value.font = value_font
-    cell_value.border = border_style
-    cell_value.alignment = left_align
-    ws.cell(row=current_row, column=4).border = border_style
-    current_row += 1
-    
-    # Separator
-    ws.merge_cells(f'A{current_row}:D{current_row}')
-    cell = ws.cell(row=current_row, column=1, value="")
-    cell.border = border_style
-    for col in range(2, 5):
-        ws.cell(row=current_row, column=col).border = border_style
-    current_row += 1
-    
-    # Vivienda
-    piso = vivienda.get("Piso", "")
-    vivienda_short = piso.replace("Escalera ", "E").replace(" - Planta ", " ").replace(" - Puerta ", "")
-    
-    ws.merge_cells(f'A{current_row}:B{current_row}')
-    cell_label = ws.cell(row=current_row, column=1, value="Vivienda:")
-    cell_label.font = label_font
-    cell_label.border = border_style
-    cell_label.alignment = right_align
-    ws.cell(row=current_row, column=2).border = border_style
-    
-    ws.merge_cells(f'C{current_row}:D{current_row}')
-    cell_value = ws.cell(row=current_row, column=3, value=vivienda_short)
-    cell_value.font = value_font
-    cell_value.border = border_style
-    cell_value.alignment = left_align
-    ws.cell(row=current_row, column=4).border = border_style
-    current_row += 1
-    
-    # Empty row
-    ws.merge_cells(f'A{current_row}:D{current_row}')
-    cell = ws.cell(row=current_row, column=1, value="")
-    cell.border = border_style
-    for col in range(2, 5):
-        ws.cell(row=current_row, column=col).border = border_style
-    current_row += 1
-    
-    # TOTAL GASTADO (always row 7 — fixed by standardized header layout)
-    ws.merge_cells(f'A{current_row}:B{current_row}')
-    cell_label = ws.cell(row=current_row, column=1, value="TOTAL GASTADO:")
-    cell_label.font = total_font
-    cell_label.fill = total_fill
-    cell_label.border = border_style
-    cell_label.alignment = right_align
-    ws.cell(row=current_row, column=2).border = border_style
-    ws.cell(row=current_row, column=2).fill = total_fill
-    
-    cell_value = ws.cell(row=current_row, column=3, value="")  # Formula added later
-    cell_value.fill = total_fill
-    cell_value.border = border_style
-    cell_value.alignment = right_align
-    cell_value.number_format = '#,##0.00'
-    
-    cell_currency = ws.cell(row=current_row, column=4, value="€ + IVA")
-    cell_currency.font = value_font
-    cell_currency.fill = total_fill
-    cell_currency.border = border_style
-    cell_currency.alignment = left_align
-    
-    # Column widths
+
+    # E:F merged — currency label
+    ws.merge_cells(f'E{current_row}:F{current_row}')
+    cc = ws.cell(row=current_row, column=5, value="€ + IVA")
+    cc.font = value_font; cc.fill = total_fill
+    cc.border = border_style; cc.alignment = left_align
+    ws.cell(row=current_row, column=6).fill   = total_fill
+    ws.cell(row=current_row, column=6).border = border_style
+
+    # Column widths (overridden by create_mejoras_table; kept as A4-friendly fallback)
     ws.column_dimensions['A'].width = 18
     ws.column_dimensions['B'].width = 18
     ws.column_dimensions['C'].width = 20
-    ws.column_dimensions['D'].width = 12
-    
+    ws.column_dimensions['D'].width = 14
+    ws.column_dimensions['E'].width = 14
+    ws.column_dimensions['F'].width = 12
+
     return current_row
+
+
+def _apply_a4_print_setup(ws):
+    """Configure a worksheet for A4 portrait printing that fits to 1 page wide."""
+    if not ws.sheet_properties.pageSetUpPr:
+        ws.sheet_properties.pageSetUpPr = PageSetupProperties()
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.page_setup.paperSize   = 9           # A4
+    ws.page_setup.orientation = 'portrait'
+    ws.page_setup.fitToWidth  = 1
+    ws.page_setup.fitToHeight = 0           # unlimited pages tall
+    ws.print_options.horizontalCentered = True
 
 
 def get_cocina_options_for_vivienda(piso_short, catalog):
@@ -663,27 +794,31 @@ def generate_final_sheets():
     create_output_dir(output_dir)
     
     wb = openpyxl.Workbook()
-    
+
+    print_info("Creating Cuadro de mandos...")
+    create_cuadro_mandos_sheet(wb)
+
     print_info("Creating summary sheet...")
     create_summary_sheet(wb, viviendas)
-    
+
     print_info("Creating constructor summary sheet...")
     create_constructor_summary_sheet(wb)
-    
+
     print_info(f"Creating {len(viviendas)} individual sheets...")
-    
+
     for idx, vivienda in enumerate(viviendas, start=1):
         piso = vivienda.get("Piso", f"Vivienda_{idx}")
         piso_short = piso.replace("Escalera ", "E").replace(" - Planta ", " ").replace(" - Puerta ", "")
-        
+
         sheet_name = piso_short[:31]
-        
+
         print_info(f"  Sheet {idx}/{len(viviendas)}: {sheet_name}")
-        
+
         ws = wb.create_sheet(title=sheet_name)
-        
+
         header_end_row = create_header_box(ws, vivienda)
         create_mejoras_table(ws, vivienda, catalog, header_end_row)
+        _apply_a4_print_setup(ws)
     
     print_info("Populating constructor summary with dynamic formulas...")
     populate_constructor_summary(wb, catalog, viviendas)

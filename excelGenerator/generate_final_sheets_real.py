@@ -28,11 +28,13 @@ import openpyxl
 
 from generate_final_sheets import (
     load_mejoras_catalog,
+    create_cuadro_mandos_sheet,
     create_summary_sheet,
     create_constructor_summary_sheet,
     populate_constructor_summary,
     create_header_box,
     create_mejoras_table,
+    _apply_a4_print_setup,
 )
 from utils import (
     create_output_dir,
@@ -175,11 +177,19 @@ def generate_real_sheets():
 
         wb = openpyxl.Workbook()
 
+        print_info("  Creating Cuadro de mandos...")
+        create_cuadro_mandos_sheet(wb)
+
         print_info("  Creating summary sheet...")
         create_summary_sheet(wb, viviendas)
 
         print_info("  Creating constructor summary sheet...")
         create_constructor_summary_sheet(wb)
+
+        origin_header = (
+            f"{input_basename} \u2014 "
+            f"{os.path.basename(os.path.dirname(os.path.abspath(input_file)))}"
+        )
 
         print_info(f"  Creating {len(viviendas)} individual sheets...")
         for idx, vivienda in enumerate(viviendas, start=1):
@@ -192,8 +202,9 @@ def generate_real_sheets():
 
             print_info(f"    Sheet {idx}/{len(viviendas)}: {sheet_name}")
             ws = wb.create_sheet(title=sheet_name)
-            header_end_row = create_header_box(ws, vivienda)
+            header_end_row = create_header_box(ws, vivienda, origin_header=origin_header)
             create_mejoras_table(ws, vivienda, catalog, header_end_row)
+            _apply_a4_print_setup(ws)
 
         print_info("  Populating constructor summary with direct-reference formulas...")
         populate_constructor_summary(wb, catalog, viviendas)
