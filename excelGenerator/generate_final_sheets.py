@@ -7,6 +7,7 @@ Creates individual sheets per housing unit from the base template with mejoras c
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.formatting.rule import FormulaRule
 import os
 import glob
 import json
@@ -97,6 +98,10 @@ def create_summary_sheet(wb, viviendas):
     title_cell.font = Font(bold=True, size=14, name="Calibri")
     title_cell.alignment = center_align
     
+    # Use "MÁX DISPONIBLE" header if viviendas carry pre-filled values, else "MAX MÓDULO"
+    has_max_disponible = any(v.get("Max Disponible") is not None for v in viviendas)
+    max_modulo_header = "MÁX DISPONIBLE" if has_max_disponible else "MAX MÓDULO"
+
     # Headers row 2
     headers = [
         "COMPRADOR 1 NOMBRE",
@@ -107,7 +112,7 @@ def create_summary_sheet(wb, viviendas):
         "COMPRADOR 2 APELLIDO 2",
         "PISO",
         "TOTAL GASTADO",
-        "MAX MÓDULO",
+        max_modulo_header,
         "SOBRANTE"
     ]
     
@@ -141,9 +146,11 @@ def create_summary_sheet(wb, viviendas):
         cell_total.number_format = '#,##0.00'
         cell_total.border = border_style
         
-        # Max Módulo - manual entry
-        ws.cell(row=row_idx, column=9, value="").border = border_style
-        ws.cell(row=row_idx, column=9).number_format = '#,##0.00'
+        # Max Disponible / Max Módulo — pre-filled from input when available, else empty
+        max_disp_val = vivienda.get("Max Disponible")
+        cell_max = ws.cell(row=row_idx, column=9, value=max_disp_val if max_disp_val is not None else "")
+        cell_max.border = border_style
+        cell_max.number_format = '#,##0.00'
         
         # Sobrante - formula =MAX MÓDULO - TOTAL GASTADO
         cell_sobrante = ws.cell(row=row_idx, column=10)
@@ -151,6 +158,15 @@ def create_summary_sheet(wb, viviendas):
         cell_sobrante.number_format = '#,##0.00'
         cell_sobrante.border = border_style
     
+    # Conditional formatting: highlight TOTAL GASTADO in pastel red when it exceeds MÁX DISPONIBLE
+    if has_max_disponible and viviendas:
+        last_data_row = len(viviendas) + 2  # data starts at row 3
+        pastel_red = PatternFill(start_color="FFCCCC", end_color="FFCCCC", fill_type="solid")
+        # Formula anchored to first data row; Excel adjusts per row automatically.
+        # Only fires when col I has a value (real mode) AND col H exceeds it.
+        rule = FormulaRule(formula=['=AND(I3<>"",H3>I3)'], fill=pastel_red)
+        ws.conditional_formatting.add(f"H3:H{last_data_row}", rule)
+
     # Column widths
     ws.column_dimensions['A'].width = 20
     ws.column_dimensions['B'].width = 20

@@ -98,12 +98,13 @@ def read_real_input(filepath):
                 print_warning(f"Row {row_idx}: cannot parse esc={esc!r} planta={planta!r} — skipped")
                 continue
 
-            nombre1    = strip_honorific(ws.cell(row=row_idx, column=2).value)
-            apellido1_1 = _clean(ws.cell(row=row_idx, column=3).value)
-            apellido1_2 = _clean(ws.cell(row=row_idx, column=4).value)
-            nombre2    = strip_honorific(ws.cell(row=row_idx, column=5).value)
-            apellido2_1 = _clean(ws.cell(row=row_idx, column=6).value)
-            apellido2_2 = _clean(ws.cell(row=row_idx, column=7).value)
+            nombre1      = strip_honorific(ws.cell(row=row_idx, column=2).value)
+            apellido1_1  = _clean(ws.cell(row=row_idx, column=3).value)
+            apellido1_2  = _clean(ws.cell(row=row_idx, column=4).value)
+            nombre2      = strip_honorific(ws.cell(row=row_idx, column=5).value)
+            apellido2_1  = _clean(ws.cell(row=row_idx, column=6).value)
+            apellido2_2  = _clean(ws.cell(row=row_idx, column=7).value)
+            max_disponible = ws.cell(row=row_idx, column=17).value
 
             viviendas.append({
                 "Comprador 1 - Nombre":     nombre1    or "",
@@ -112,7 +113,8 @@ def read_real_input(filepath):
                 "Comprador 2 - Nombre":     nombre2,
                 "Comprador 2 - Apellido 1": apellido2_1,
                 "Comprador 2 - Apellido 2": apellido2_2,
-                "Piso": piso,
+                "Piso":           piso,
+                "Max Disponible": max_disponible,
             })
 
         wb.close()
