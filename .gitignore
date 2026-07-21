@@ -16,3 +16,5 @@ excelGenerator/output_final/*.xlsx
 # OS
 .DS_Store
 Thumbs.db
+
+*CLIENTES*
