@@ -244,13 +244,18 @@ show_excel_menu() {
         echo -e "${CYAN}           ${WHITE}Generación de Ficheros Parametrizados${CYAN}            ${NC}"
         echo -e "${CYAN}================================================================${NC}"
         echo ""
-        echo -e "${WHITE}${EXCEL} Available Options:${NC}"
+        echo -e "${WHITE}${HOUSE} Excel Simulado ${YELLOW}(datos de prueba generados):${NC}"
         echo ""
         echo -e "${CYAN} ${GREEN}1.${NC} ${HOUSE} Generate Excel Template                          ${NC}"
-        echo -e "      ↳ Crear plantilla base para constructora            ${NC}"
+        echo -e "      ↳ Crear plantilla base con datos simulados          ${NC}"
         echo ""
-        echo -e "${CYAN} ${GREEN}2.${NC} 📋 Generate Final Sheets                             ${NC}"
-        echo -e "      ↳ Generar Excel final con pestañas individuales    ${NC}"
+        echo -e "${CYAN} ${GREEN}2.${NC} 📋 Generate Final Sheets (simulado)                 ${NC}"
+        echo -e "      ↳ Generar Excel final desde plantilla simulada     ${NC}"
+        echo ""
+        echo -e "${WHITE}${EXCEL} Excel Real ${YELLOW}(datos de clientes en input/):${NC}"
+        echo ""
+        echo -e "${CYAN} ${GREEN}3.${NC} 📁 Generate Real Excel                               ${NC}"
+        echo -e "      ↳ Generar Excel final desde ficheros de input/     ${NC}"
         echo ""
         echo -e "${CYAN} ${GREEN}0.${NC} ${EXIT} Back to Main Menu                               ${NC}"
         echo -e "${CYAN}================================================================${NC}"
@@ -285,8 +290,22 @@ show_excel_menu() {
                 fi
                 pause
                 ;;
+            3)
+                show_header
+                echo -e "${GREEN}📁 Generating real Excel from input/ files...${NC}"
+                echo ""
+                safe_run_python generate_final_sheets_real.py
+                exit_code=$?
+                echo ""
+                if [ $exit_code -eq 0 ]; then
+                    echo -e "${GREEN}${CHECK} Real Excel generated successfully!${NC}"
+                else
+                    echo -e "${RED}${EXIT} Real Excel generation failed (exit code: $exit_code)${NC}"
+                fi
+                pause
+                ;;
             0) return ;;
-            *) echo -e "${RED}${EXIT} Invalid option. Please choose 0-2.${NC}"; pause ;;
+            *) echo -e "${RED}${EXIT} Invalid option. Please choose 0-3.${NC}"; pause ;;
         esac
     done
 }
