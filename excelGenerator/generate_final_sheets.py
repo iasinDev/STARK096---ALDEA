@@ -356,8 +356,9 @@ def populate_constructor_summary(wb, catalog, viviendas):
     # Compute the row where mejoras start in every individual sheet
     # Header always = 8 rows; table header offset = +2; data offset = +3
     DATA_START_ROW = 8 + 3  # = 11
-    N_PASOS = len(catalog["pasos_basicos"]) + 1  # +1 for Refuerzo de Pladur row after COCINA
-    MEJORAS_START_ROW = DATA_START_ROW + N_PASOS  # = 17
+    # +1 Refuerzo after COCINA, +2 FONDO DECORADO after each of the two baño pasos
+    N_PASOS = len(catalog["pasos_basicos"]) + 1 + 2
+    MEJORAS_START_ROW = DATA_START_ROW + N_PASOS  # = 19
     
     current_row = 4
     mejora_idx = 0
@@ -583,6 +584,23 @@ def get_cocina_options_for_vivienda(piso_short, catalog):
     return []
 
 
+def _item_applies_to_piso(item, piso_short):
+    """Return False if a catalog item has a 'filtro' that excludes this piso_short."""
+    filtro = item.get("filtro")
+    if not filtro or len(piso_short) < 5:
+        return True
+    esc   = piso_short[1]        # '1', '2', '3'
+    planta = int(piso_short[3])  # 1..7
+    letra  = piso_short[4]       # 'A'..'E'
+    plantas = filtro.get("plantas", [])
+    if plantas and planta not in plantas:
+        return False
+    tipos = filtro.get("tipos", [])   # e.g. ["1AD", "2ABCD", "3AE"]
+    if tipos and not any(t[0] == esc and letra in t[1:] for t in tipos):
+        return False
+    return True
+
+
 def _make_cocina_price_formula(b_ref, opciones):
     """Build a nested-IF Excel formula that returns the cocina price for the selected option.
 
@@ -774,11 +792,40 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
 
             current_row += 1
 
+            if paso["codigo"] in ("BAÑO_GEN", "BAÑO_SUITE"):
+                fondo_label = "FONDO DECORADO (BAÑO PASILLO)" if paso["codigo"] == "BAÑO_GEN" else "FONDO DECORADO (BAÑO HAB PRINCIPAL)"
+                ws[f'A{current_row}'].value = fondo_label
+                ws[f'A{current_row}'].border = border_style
+                ws[f'A{current_row}'].alignment = left_align
+
+                dv_fd = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
+                ws.add_data_validation(dv_fd)
+                dv_fd.add(f'B{current_row}')
+                ws[f'B{current_row}'].border = border_style
+
+                ws[f'C{current_row}'].value = 0
+                ws[f'C{current_row}'].border = border_style
+                ws[f'C{current_row}'].alignment = right_align
+                ws[f'C{current_row}'].number_format = '#,##0.00'
+
+                ws[f'D{current_row}'].value = 1
+                ws[f'D{current_row}'].border = border_style
+                ws[f'D{current_row}'].alignment = center_align
+
+                ws[f'E{current_row}'].value = f'=C{current_row}*D{current_row}'
+                ws[f'E{current_row}'].border = border_style
+                ws[f'E{current_row}'].alignment = right_align
+                ws[f'E{current_row}'].number_format = '#,##0.00'
+
+                current_row += 1
+
     # ── Mejoras ──────────────────────────────────────────────────────────
     if "mejoras" in catalog:
         for mejora_cat in catalog["mejoras"]:
             if "items" in mejora_cat:
                 for item in mejora_cat["items"]:
+                    if not _item_applies_to_piso(item, piso_short):
+                        continue
                     concepto = item.get("concepto", "")
                     precio   = item.get("precio", 0)
                     if concepto:

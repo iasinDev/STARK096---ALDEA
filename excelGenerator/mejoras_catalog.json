@@ -421,6 +421,20 @@
       "codigo": "VENTANAS",
       "items": [
         {
+          "codigo": "PERS-BALC-COCINA",
+          "concepto": "A\u00f1adir persiana en balconera cocina",
+          "precio": 600.00,
+          "cantidad_tipo": "unidades",
+          "filtro": { "plantas": [1], "tipos": ["1AD", "2AD", "3AE"] }
+        },
+        {
+          "codigo": "PERS-VENT-COCINA",
+          "concepto": "A\u00f1adir persiana en ventana cocina",
+          "precio": 375.00,
+          "cantidad_tipo": "unidades",
+          "filtro": { "plantas": [2, 3, 4, 5, 6, 7], "tipos": ["1AD", "2ABCD", "3AE"] }
+        },
+        {
           "codigo": "VENT-OSCILO-TODAS",
           "concepto": "Apertura oscilobatiente todas ventanas",
           "precio": 437.50,
