@@ -358,11 +358,20 @@
         {
           "codigo": "GRIF-INTIMIXER",
           "concepto": "Grifo Sanitario intimixer",
-          "precio": 893.75,
-          "cantidad_tipo": "si/no",
-          "opciones_extra": [
-            "Baño dormitorio principal",
-            "Baño pasillo"
+          "cantidad_tipo": "unidades",
+          "opciones_con_precio": [
+            {
+              "nombre": "Baño dormitorio principal",
+              "precio": 893.75
+            },
+            {
+              "nombre": "Baño pasillo",
+              "precio": 893.75
+            },
+            {
+              "nombre": "Baño principal y pasillo",
+              "precio": 1787.5
+            }
           ]
         },
         {
@@ -392,12 +401,25 @@
         {
           "codigo": "LUZ-ESPEJO-BAÑO",
           "concepto": "Punto luz espejo baño",
-          "precio": 237.50,
-          "cantidad_tipo": "unidades"
+          "cantidad_tipo": "unidades",
+          "opciones_con_precio": [
+            {
+              "nombre": "Baño dormitorio principal",
+              "precio": 237.50
+            },
+            {
+              "nombre": "Baño pasillo",
+              "precio": 237.50
+            },
+            {
+              "nombre": "Baño principal y pasillo",
+              "precio": 475.00
+            }
+          ]
         },
         {
           "codigo": "LUZ-PKG-PASILLO",
-          "concepto": "Paquete light pasillo (6 focos)",
+          "concepto": "Paquete light pasillo y recibidor (6 focos)",
           "precio": 525.00,
           "cantidad_tipo": "si/no"
         }
@@ -469,41 +491,63 @@
           }
         },
         {
+          "codigo": "PERS-BALC-SALON-PRIN",
+          "concepto": "A\u00f1adir persiana en balconera sal\u00f3n\u2013comedor (principal)",
+          "precio": 750.00,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1ABCD", "2ABCD", "3ABDE"] }
+        },
+        {
+          "codigo": "PERS-BALC-SALON-PEQ",
+          "concepto": "A\u00f1adir persiana en balconera sal\u00f3n\u2013comedor (peque\u00f1a)",
+          "precio": 600.00,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1BC", "3BDC"] }
+        },
+        {
+          "codigo": "PERS-VENT-SALON",
+          "concepto": "A\u00f1adir persiana en ventana sal\u00f3n\u2013comedor",
+          "precio": 450.00,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["3C"] }
+        },
+        {
           "codigo": "VENT-OSCILO-TODAS",
           "concepto": "Apertura oscilobatiente todas ventanas",
           "precio": 437.50,
           "cantidad_tipo": "si/no"
         },
-        {
-          "codigo": "PERS-MOTOR-UNIT",
-          "concepto": "Motorización persiana",
-          "precio": 595.00,
-          "cantidad_tipo": "unidades"
-        },
-        {
-          "codigo": "MOSQ-VERT-ENROLL",
-          "concepto": "Mosquitera enrollable vertical",
-          "precio": 375.00,
-          "cantidad_tipo": "unidades"
-        },
-        {
-          "codigo": "MOSQ-LAT-ENROLL",
-          "concepto": "Mosquitera enrollable lateral",
-          "precio": 625.00,
-          "cantidad_tipo": "unidades"
-        }
+        {"codigo": "PERS-MOTOR-COCINA",      "concepto": "Motorización persiana - Cocina",                            "precio": 595.00, "cantidad_tipo": "si/no"},
+        {"codigo": "PERS-MOTOR-DORM1",        "concepto": "Motorización persiana - Dormitorio 1",                      "precio": 595.00, "cantidad_tipo": "si/no"},
+        {"codigo": "PERS-MOTOR-DORM2",        "concepto": "Motorización persiana - Dormitorio 2",                      "precio": 595.00, "cantidad_tipo": "si/no"},
+        {"codigo": "PERS-MOTOR-DORMP",        "concepto": "Motorización persiana - Dormitorio principal",              "precio": 595.00, "cantidad_tipo": "si/no"},
+        {"codigo": "PERS-MOTOR-SALON-BPRIN",  "concepto": "Motorización persiana - Sal\u00f3n Balconera principal",   "precio": 595.00, "cantidad_tipo": "si/no"},
+        {"codigo": "PERS-MOTOR-SALON-BPEQ",   "concepto": "Motorización persiana - Sal\u00f3n Balconera hueco peq.",  "precio": 595.00, "cantidad_tipo": "si/no"},
+        {"codigo": "PERS-MOTOR-SALON-VENT",   "concepto": "Motorización persiana - Sal\u00f3n Ventana",               "precio": 595.00, "cantidad_tipo": "si/no"}
+      ]
+    },
+    {
+      "categoria": "MOSQUITERAS",
+      "codigo": "MOSQUITERAS",
+      "items": [
+        {"codigo": "MOSQ-VERT-COCINA",      "concepto": "Mosquitera enrollable vertical - Cocina",                          "precio": 375.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-VERT-SALON",       "concepto": "Mosquitera enrollable vertical - Sal\u00f3n\u2013Comedor",       "precio": 375.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-VERT-DORM1",       "concepto": "Mosquitera enrollable vertical - Dormitorio 1",                  "precio": 375.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-VERT-DORM2",       "concepto": "Mosquitera enrollable vertical - Dormitorio 2",                  "precio": 375.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-VERT-DORM3",       "concepto": "Mosquitera enrollable vertical - Dormitorio 3",                  "precio": 375.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-SALON-BPRIN",  "concepto": "Mosquitera enrollable lateral - Sal\u00f3n Balconera principal", "precio": 625.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-SALON-BPEQ",   "concepto": "Mosquitera enrollable lateral - Sal\u00f3n Balconera hueco peq.","precio": 625.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-SALON-VENT",   "concepto": "Mosquitera enrollable lateral - Sal\u00f3n Ventana",             "precio": 625.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-COCINA",       "concepto": "Mosquitera enrollable lateral - Cocina",                         "precio": 625.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-DORM1",        "concepto": "Mosquitera enrollable lateral - Dormitorio 1",                  "precio": 625.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-DORM2",        "concepto": "Mosquitera enrollable lateral - Dormitorio 2",                  "precio": 625.00, "cantidad_tipo": "si/no"},
+        {"codigo": "MOSQ-LAT-DORM3",        "concepto": "Mosquitera enrollable lateral - Dormitorio 3",                  "precio": 625.00, "cantidad_tipo": "si/no"}
       ]
     },
     {
       "categoria": "REFUERZOS",
       "codigo": "REFUERZOS",
       "items": [
-        {
-          "codigo": "REF-PLADUR-COCINA",
-          "concepto": "Refuerzo pladur muebles cocina",
-          "precio": 200.00,
-          "cantidad_tipo": "si/no"
-        },
         {
           "codigo": "REF-PLADUR-SALON",
           "concepto": "Refuerzo pladur muebles salón",
@@ -520,37 +564,43 @@
           "codigo": "CIERRE-COC-1ADAE",
           "concepto": "Cerramiento cocina 1AD/2AD/3AE",
           "precio": 1676.35,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1AD", "2AD", "3AE"] }
         },
         {
           "codigo": "CIERRE-COC-2BC",
           "concepto": "Cerramiento cocina 2BC",
           "precio": 2019.35,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["2BC"] }
         },
         {
           "codigo": "CIERRE-COC-3C",
           "concepto": "Cerramiento cocina 3C",
           "precio": 2428.30,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["3C"] }
         },
         {
           "codigo": "ALIC-COC-1ADAE",
           "concepto": "Alicatado cocina cerrada 1AD/2AD/3AE",
           "precio": 2265.12,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1AD", "2AD", "3AE"] }
         },
         {
           "codigo": "ALIC-COC-2BC",
           "concepto": "Alicatado cocina cerrada 2BC",
           "precio": 2435.00,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["2BC"] }
         },
         {
           "codigo": "ALIC-COC-3C",
           "concepto": "Alicatado cocina cerrada 3C",
           "precio": 2491.63,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["3C"] }
         }
       ]
     }

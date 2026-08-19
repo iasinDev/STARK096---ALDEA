@@ -5,7 +5,7 @@ Creates individual sheets per housing unit from the base template with mejoras c
 """
 
 import openpyxl
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side, Protection
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.worksheet.properties import PageSetupProperties
@@ -631,6 +631,19 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
     total_font    = Font(bold=True, size=11, name="Calibri")
     refuerzo_fill = PatternFill(start_color="DEEBF7", end_color="DEEBF7", fill_type="solid")
     refuerzo_font = Font(italic=True, size=10, name="Calibri")
+    # Shared pastel for COCINA step + its Refuerzo sub-row
+    cocina_fill   = PatternFill(start_color="FDEBD0", end_color="FDEBD0", fill_type="solid")
+    # Pastel background per category group (prefix-matched against "categoria")
+    _cat_fills = {
+        "DORMITORIOS":  PatternFill(start_color="EDE7F6", end_color="EDE7F6", fill_type="solid"),
+        "BA\u00d1OS":       PatternFill(start_color="E0F4FF", end_color="E0F4FF", fill_type="solid"),
+        "ILUMINACI\u00d3N": PatternFill(start_color="FEFDE7", end_color="FEFDE7", fill_type="solid"),
+        "SUELOS":       PatternFill(start_color="F5EDD9", end_color="F5EDD9", fill_type="solid"),
+        "VENTANAS":     PatternFill(start_color="E6F4EA", end_color="E6F4EA", fill_type="solid"),
+        "MOSQUITERAS":  PatternFill(start_color="E2ECF5", end_color="E2ECF5", fill_type="solid"),
+        "REFUERZOS":    PatternFill(start_color="FCE4EC", end_color="FCE4EC", fill_type="solid"),
+        "CIERRE":       PatternFill(start_color="FDE8D8", end_color="FDE8D8", fill_type="solid"),
+    }
     border_style  = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -655,8 +668,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
         cell.border = border_style
         cell.alignment = center_align
 
-    # Column widths
-    ws.column_dimensions['A'].width = 40
+    # Column widths (A is auto-sized after content is written)
     ws.column_dimensions['B'].width = 35
     ws.column_dimensions['C'].width = 12
     ws.column_dimensions['D'].width = 10
@@ -676,6 +688,8 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
             opciones = get_cocina_options_for_vivienda(piso_short, catalog)
 
             # COCINA main row
+            for _col in ['A', 'B', 'C', 'D', 'E']:
+                ws[f'{_col}{current_row}'].fill = cocina_fill
             ws[f'A{current_row}'].value = paso["nombre"]
             ws[f'A{current_row}'].border = border_style
             ws[f'A{current_row}'].alignment = left_align
@@ -711,7 +725,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
             # ── Refuerzo de Pladur - Cocina (always after COCINA) ─────────
             ws[f'A{current_row}'].value = "Refuerzo de Pladur - Cocina"
             ws[f'A{current_row}'].font  = refuerzo_font
-            ws[f'A{current_row}'].fill  = refuerzo_fill
+            ws[f'A{current_row}'].fill  = cocina_fill
             ws[f'A{current_row}'].border = border_style
             ws[f'A{current_row}'].alignment = left_align
 
@@ -729,7 +743,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                 f'"Refuerzo para cocina Elegance",""))))'
             )
             ws[f'B{current_row}'].font  = refuerzo_font
-            ws[f'B{current_row}'].fill  = refuerzo_fill
+            ws[f'B{current_row}'].fill  = cocina_fill
             ws[f'B{current_row}'].border = border_style
             # Dropdown for PROJECT case; showErrorMessage=False so formula values don't error
             ref_dv = DataValidation(
@@ -744,20 +758,20 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
             # 200 €/viv if any refuerzo selected, 0 if blank
             ws[f'C{current_row}'].value = f'=IF(B{current_row}="",0,200)'
             ws[f'C{current_row}'].font  = refuerzo_font
-            ws[f'C{current_row}'].fill  = refuerzo_fill
+            ws[f'C{current_row}'].fill  = cocina_fill
             ws[f'C{current_row}'].border = border_style
             ws[f'C{current_row}'].alignment = right_align
             ws[f'C{current_row}'].number_format = '#,##0.00'
 
             ws[f'D{current_row}'].value = 1
             ws[f'D{current_row}'].font  = refuerzo_font
-            ws[f'D{current_row}'].fill  = refuerzo_fill
+            ws[f'D{current_row}'].fill  = cocina_fill
             ws[f'D{current_row}'].border = border_style
             ws[f'D{current_row}'].alignment = center_align
 
             ws[f'E{current_row}'].value = f'=C{current_row}*D{current_row}'
             ws[f'E{current_row}'].font  = refuerzo_font
-            ws[f'E{current_row}'].fill  = refuerzo_fill
+            ws[f'E{current_row}'].fill  = cocina_fill
             ws[f'E{current_row}'].border = border_style
             ws[f'E{current_row}'].alignment = right_align
             ws[f'E{current_row}'].number_format = '#,##0.00'
@@ -824,13 +838,19 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
     if "mejoras" in catalog:
         for mejora_cat in catalog["mejoras"]:
             if "items" in mejora_cat:
+                _cat_key  = next((k for k in _cat_fills if mejora_cat.get("categoria", "").startswith(k)), None)
+                _cat_fill = _cat_fills.get(_cat_key)
                 for item in mejora_cat["items"]:
                     if not _item_applies_to_piso(item, piso_short):
                         continue
-                    concepto = item.get("concepto", "")
-                    precio   = item.get("precio", 0)
-                    codigo   = item.get("codigo", "")
+                    concepto            = item.get("concepto", "")
+                    precio              = item.get("precio", 0)
+                    codigo              = item.get("codigo", "")
+                    opciones_con_precio = item.get("opciones_con_precio", [])
                     if concepto:
+                        if _cat_fill:
+                            for _fc in ['A', 'B', 'C', 'D', 'E']:
+                                ws[f'{_fc}{current_row}'].fill = _cat_fill
                         ws[f'A{current_row}'].value = concepto
                         ws[f'A{current_row}'].border = border_style
                         ws[f'A{current_row}'].alignment = left_align
@@ -839,7 +859,14 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                         depende_de     = item.get("depende_de", "")
                         parent_row     = item_rows.get(depende_de) if depende_de else None
 
-                        if opciones_extra:
+                        if opciones_con_precio:
+                            nombres = [o["nombre"] for o in opciones_con_precio]
+                            dv_ocp = DataValidation(type="list", formula1=f'"{chr(44).join(nombres)}"', allow_blank=True)
+                            ws.add_data_validation(dv_ocp)
+                            dv_ocp.add(f'B{current_row}')
+                            precio    = _make_cocina_price_formula(f'B{current_row}', opciones_con_precio)
+                            d_formula = f'=IF(B{current_row}="",0,1)'
+                        elif opciones_extra:
                             dv_item = DataValidation(
                                 type="list",
                                 formula1=f'"{chr(44).join(opciones_extra)}"',
@@ -910,8 +937,22 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
     ws[f'E{current_row}'].alignment = right_align
     ws[f'E{current_row}'].number_format = '#,##0.00'
 
+    # Unlock only Selección (B) cells so D/C/E formulas are read-only
+    for r in range(data_start_row, data_end_row + 1):
+        ws.cell(r, 2).protection = Protection(locked=False)
+    ws.protection.sheet = True
+    ws.protection.selectLockedCells = False
+
     # Update TOTAL GASTADO header cell (C{start_row}) to reference the table E total
     ws[f'C{start_row}'].value = f'=E{current_row}'
+
+    # Auto-fit column A based on the longest text value in the table
+    max_len = max(
+        (len(str(ws.cell(r, 1).value)) for r in range(start_row, current_row + 1)
+         if ws.cell(r, 1).value and not str(ws.cell(r, 1).value).startswith('=')),
+        default=10
+    )
+    ws.column_dimensions['A'].width = max_len + 4
 
     return current_row
 
