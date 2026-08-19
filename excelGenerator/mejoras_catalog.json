@@ -302,9 +302,9 @@
           "precio": 986.00,
           "cantidad_tipo": "si/no",
           "opciones_extra": [
-            "ECD-Roble",
-            "NGY-Gris",
-            "NWT-Blanco"
+            "ECD - Melamina Roble Colorado",
+            "NGY – Melamina Gris",
+            "NWT - Melamina Blanco"
           ]
         },
         {
@@ -313,9 +313,9 @@
           "precio": 893.75,
           "cantidad_tipo": "si/no",
           "opciones_extra": [
-            "ECD-Roble",
-            "NGY-Gris",
-            "NWT-Blanco"
+            "ECD - Melamina Roble Colorado",
+            "NGY – Melamina Gris",
+            "NWT - Melamina Blanco"
           ]
         }
       ]
@@ -338,9 +338,16 @@
         },
         {
           "codigo": "CAMBIO-BAÑ-DUCH",
-          "concepto": "Cambio bañera por ducha",
+          "concepto": "Cambio bañera por ducha + Griferías",
           "precio": 833.00,
           "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "MAMP-DUCHA-CAMBIO",
+          "concepto": "M\u00e1mpara de ducha un fijo Walk-in 100 o similar",
+          "precio": 995.25,
+          "cantidad_tipo": "si/no",
+          "depende_de": "CAMBIO-BAÑ-DUCH"
         }
       ]
     },
@@ -350,9 +357,13 @@
       "items": [
         {
           "codigo": "GRIF-INTIMIXER",
-          "concepto": "Grifo intimixer",
+          "concepto": "Grifo Sanitario intimixer",
           "precio": 893.75,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "opciones_extra": [
+            "Baño dormitorio principal",
+            "Baño pasillo"
+          ]
         },
         {
           "codigo": "GRIF-TERM-DUCHA",

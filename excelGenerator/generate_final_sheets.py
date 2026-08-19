@@ -820,6 +820,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                 current_row += 1
 
     # ── Mejoras ──────────────────────────────────────────────────────────
+    item_rows = {}  # codigo → row, for depende_de lookups
     if "mejoras" in catalog:
         for mejora_cat in catalog["mejoras"]:
             if "items" in mejora_cat:
@@ -828,20 +829,52 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                         continue
                     concepto = item.get("concepto", "")
                     precio   = item.get("precio", 0)
+                    codigo   = item.get("codigo", "")
                     if concepto:
                         ws[f'A{current_row}'].value = concepto
                         ws[f'A{current_row}'].border = border_style
                         ws[f'A{current_row}'].alignment = left_align
 
-                        ws[f'B{current_row}'].value  = ""
+                        opciones_extra = item.get("opciones_extra", [])
+                        depende_de     = item.get("depende_de", "")
+                        parent_row     = item_rows.get(depende_de) if depende_de else None
+
+                        if opciones_extra:
+                            dv_item = DataValidation(
+                                type="list",
+                                formula1=f'"{chr(44).join(opciones_extra)}"',
+                                allow_blank=True
+                            )
+                            ws.add_data_validation(dv_item)
+                            dv_item.add(f'B{current_row}')
+                            d_formula = f'=IF(B{current_row}="",0,1)'
+                        elif parent_row:
+                            # D only activates when both this row and parent are "Sí"
+                            dv_sino = DataValidation(type="list", formula1='"S\u00ed,No"', allow_blank=True)
+                            ws.add_data_validation(dv_sino)
+                            dv_sino.add(f'B{current_row}')
+                            d_formula = f'=IF(AND(B{current_row}="S\u00ed",B{parent_row}="S\u00ed"),1,0)'
+                        else:
+                            dv_sino = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
+                            ws.add_data_validation(dv_sino)
+                            dv_sino.add(f'B{current_row}')
+                            d_formula = f'=IF(B{current_row}="Sí",1,0)'
+                        if not (depende_de and parent_row):
+                            ws[f'B{current_row}'].value  = ""
                         ws[f'B{current_row}'].border = border_style
+
+                        if parent_row:
+                            for _col in ['A', 'B', 'C', 'D', 'E']:
+                                ws[f'{_col}{current_row}'].fill = refuerzo_fill
+                            for _col in ['A', 'B', 'C', 'E']:
+                                ws[f'{_col}{current_row}'].font = refuerzo_font
 
                         ws[f'C{current_row}'].value = precio
                         ws[f'C{current_row}'].border = border_style
                         ws[f'C{current_row}'].alignment = right_align
                         ws[f'C{current_row}'].number_format = '#,##0.00'
 
-                        ws[f'D{current_row}'].value = 0  # user enters quantity to activate
+                        ws[f'D{current_row}'].value = d_formula
                         ws[f'D{current_row}'].border = border_style
                         ws[f'D{current_row}'].alignment = center_align
 
@@ -850,6 +883,8 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                         ws[f'E{current_row}'].alignment = right_align
                         ws[f'E{current_row}'].number_format = '#,##0.00'
 
+                        if codigo:
+                            item_rows[codigo] = current_row
                         current_row += 1
 
     data_end_row = current_row - 1
