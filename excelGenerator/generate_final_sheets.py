@@ -643,6 +643,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
         "MOSQUITERAS":  PatternFill(start_color="E2ECF5", end_color="E2ECF5", fill_type="solid"),
         "REFUERZOS":    PatternFill(start_color="FCE4EC", end_color="FCE4EC", fill_type="solid"),
         "CIERRE":       PatternFill(start_color="FDE8D8", end_color="FDE8D8", fill_type="solid"),
+        "SEGURIDAD":    PatternFill(start_color="E8F6EF", end_color="E8F6EF", fill_type="solid"),
     }
     border_style  = Border(
         left=Side(style='thin'),

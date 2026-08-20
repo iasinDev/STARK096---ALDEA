@@ -636,73 +636,114 @@
       "items": [
         {
           "codigo": "MOSQ-VERT-COCINA",
-          "concepto": "Mosquitera enrollable vertical - Cocina",
+          "concepto": "Mosquitera enrollable vertical ventana - Cocina",
           "precio": 375.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-VERT-SALON",
-          "concepto": "Mosquitera enrollable vertical - Sal\u00f3n\u2013Comedor",
+          "concepto": "Mosquitera enrollable vertical ventana - Sal\u00f3n\u2013Comedor",
           "precio": 375.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-VERT-DORM1",
-          "concepto": "Mosquitera enrollable vertical - Dormitorio 1",
+          "concepto": "Mosquitera enrollable vertical ventana - Dormitorio 1",
           "precio": 375.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-VERT-DORM2",
-          "concepto": "Mosquitera enrollable vertical - Dormitorio 2",
+          "concepto": "Mosquitera enrollable vertical ventana - Dormitorio 2",
           "precio": 375.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-VERT-DORM3",
-          "concepto": "Mosquitera enrollable vertical - Dormitorio 3",
+          "concepto": "Mosquitera enrollable vertical ventana - Dormitorio 3",
           "precio": 375.00,
           "cantidad_tipo": "si/no"
         },
         {
-          "codigo": "MOSQ-LAT-SALON-BPRIN",
-          "concepto": "Mosquitera enrollable lateral - Sal\u00f3n Balconera principal",
+          "codigo": "MOSQ-LAT-SALON-ACC",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Sal\u00f3n\u2013Comedor accesible (Pl 1\u00aa)",
           "precio": 625.00,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": {
+            "plantas": [
+              1
+            ]
+          }
+        },
+        {
+          "codigo": "MOSQ-LAT-SALON-BPRIN",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Sal\u00f3n Balconera principal",
+          "precio": 625.00,
+          "cantidad_tipo": "si/no",
+          "filtro": {
+            "plantas": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          }
         },
         {
           "codigo": "MOSQ-LAT-SALON-BPEQ",
-          "concepto": "Mosquitera enrollable lateral - Sal\u00f3n Balconera hueco peq.",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Sal\u00f3n Balconera hueco peq.",
           "precio": 625.00,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": {
+            "plantas": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          }
         },
         {
           "codigo": "MOSQ-LAT-SALON-VENT",
-          "concepto": "Mosquitera enrollable lateral - Sal\u00f3n Ventana",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Sal\u00f3n Ventana",
           "precio": 625.00,
-          "cantidad_tipo": "si/no"
+          "cantidad_tipo": "si/no",
+          "filtro": {
+            "plantas": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          }
         },
         {
           "codigo": "MOSQ-LAT-COCINA",
-          "concepto": "Mosquitera enrollable lateral - Cocina",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Cocina",
           "precio": 625.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-LAT-DORM1",
-          "concepto": "Mosquitera enrollable lateral - Dormitorio 1",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Dormitorio 1",
           "precio": 625.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-LAT-DORM2",
-          "concepto": "Mosquitera enrollable lateral - Dormitorio 2",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Dormitorio 2",
           "precio": 625.00,
           "cantidad_tipo": "si/no"
         },
         {
           "codigo": "MOSQ-LAT-DORM3",
-          "concepto": "Mosquitera enrollable lateral - Dormitorio 3",
+          "concepto": "Mosquitera enrollable lateral puerta balconera - Dormitorio 3",
           "precio": 625.00,
           "cantidad_tipo": "si/no"
         }
@@ -760,6 +801,17 @@
           }
         },
         {
+          "codigo": "SUELO-COCINA",
+          "concepto": "Suelo cocina",
+          "precio": 0,
+          "cantidad_tipo": "si/no",
+          "opciones_extra": [
+            "Tennic Gris 45x45",
+            "Tennic Grafito 45x45",
+            "Tennic Beige 45x45"
+          ]
+        },
+        {
           "codigo": "ALIC-COC-1ADAE",
           "concepto": "Alicatado cocina cerrada 1AD/2AD/3AE",
           "precio": 2265.12,
@@ -793,6 +845,24 @@
               "3C"
             ]
           }
+        }
+      ]
+    },
+    {
+      "categoria": "SEGURIDAD Y CONFORT",
+      "codigo": "SEGURIDAD_CONFORT",
+      "items": [
+        {
+          "codigo": "PUERTA-ACORAZADA",
+          "concepto": "Instalaci\u00f3n de puerta acorazada",
+          "precio": 1500.00,
+          "cantidad_tipo": "si/no"
+        },
+        {
+          "codigo": "TERMOSTATO-INTEL",
+          "concepto": "Instalaci\u00f3n de termostato inteligente",
+          "precio": 679.88,
+          "cantidad_tipo": "si/no"
         }
       ]
     }
