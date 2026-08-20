@@ -273,22 +273,46 @@
       "codigo": "ARMARIOS",
       "items": [
         {
-          "codigo": "ARM-2H",
-          "concepto": "Armario 2 hojas abatibles (1,00-1,20m)",
-          "precio": 1093.75,
-          "cantidad_tipo": "unidades"
-        },
-        {
-          "codigo": "ARM-3H",
-          "concepto": "Armario 3 hojas abatibles (1,30-1,80m)",
-          "precio": 1475.00,
-          "cantidad_tipo": "unidades"
-        },
-        {
-          "codigo": "ARM-4H",
-          "concepto": "Armario 4 hojas abatibles (1,80-2,40m)",
+          "codigo": "ARM-4H-DORM1",
+          "concepto": "Armario Dorm. principal \u2013 4 hojas (1,80\u20132,40m)",
           "precio": 1620.44,
-          "cantidad_tipo": "unidades"
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1ABCD", "2ABCD", "3ABDE"] }
+        },
+        {
+          "codigo": "ARM-3H-DORM1",
+          "concepto": "Armario Dorm. principal \u2013 3 hojas (1,30\u20131,80m)",
+          "precio": 1475.00,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["3C"] }
+        },
+        {
+          "codigo": "ARM-2H-DORM2",
+          "concepto": "Armario Dormitorio 2 \u2013 2 hojas (1,00\u20131,20m)",
+          "precio": 1093.75,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1ABCD", "2ABCD", "3AE"] }
+        },
+        {
+          "codigo": "ARM-3H-DORM2",
+          "concepto": "Armario Dormitorio 2 \u2013 3 hojas (1,30\u20131,80m)",
+          "precio": 1475.00,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["3BCD"] }
+        },
+        {
+          "codigo": "ARM-2H-DORM3",
+          "concepto": "Armario Dormitorio 3 \u2013 2 hojas (1,00\u20131,20m)",
+          "precio": 1093.75,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["1ABCD", "2AD", "3ABCDE"] }
+        },
+        {
+          "codigo": "ARM-3H-DORM3",
+          "concepto": "Armario Dormitorio 3 \u2013 3 hojas (1,30\u20131,80m)",
+          "precio": 1475.00,
+          "cantidad_tipo": "si/no",
+          "filtro": { "tipos": ["2BC"] }
         }
       ]
     },
