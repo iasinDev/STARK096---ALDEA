@@ -187,6 +187,7 @@ def generate_real_sheets():
         create_constructor_summary_sheet(wb)
 
         print_info(f"  Creating {len(viviendas)} individual sheets...")
+        sheet_item_rows = {}
         for idx, vivienda in enumerate(viviendas, start=1):
             piso       = vivienda.get("Piso", f"Vivienda_{idx}")
             piso_short = (piso
@@ -200,11 +201,12 @@ def generate_real_sheets():
             print_info(f"    Sheet {idx}/{len(viviendas)}: {sheet_name}")
             ws = wb.create_sheet(title=sheet_name)
             header_end_row = create_header_box(ws, vivienda, origin_header=origin_header)
-            create_mejoras_table(ws, vivienda, catalog, header_end_row)
+            _, item_rows = create_mejoras_table(ws, vivienda, catalog, header_end_row)
+            sheet_item_rows[sheet_name] = item_rows
             _apply_a4_print_setup(ws)
 
         print_info("  Populating constructor summary with direct-reference formulas...")
-        populate_constructor_summary(wb, catalog, viviendas)
+        populate_constructor_summary(wb, catalog, viviendas, sheet_item_rows)
 
         try:
             wb.save(output_file)

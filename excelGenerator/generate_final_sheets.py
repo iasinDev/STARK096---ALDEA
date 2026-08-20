@@ -322,19 +322,10 @@ def create_constructor_summary_sheet(wb):
     ws.column_dimensions['C'].width = 18
 
 
-def populate_constructor_summary(wb, catalog, viviendas):
-    """Populate constructor summary with direct cell references to aggregate mejoras from all sheets.
-    Uses F-column direct references instead of SUMIFS to stay within Excel's 8192-char formula limit.
-    
-    Layout contract (must match create_header_box + create_mejoras_table):
-      - Header always occupies rows 1-7 (TOTAL GASTADO at row 7)
-      - Table headers at row 9, data starts at row 10
-      - Pasos basicos: rows 10 to 10+N_PASOS-1
-      - Mejoras: start at row 10+N_PASOS, one row per mejora in catalog order
-    """
+def populate_constructor_summary(wb, catalog, viviendas, sheet_item_rows=None):
+    """Populate constructor summary using actual row tracking from create_mejoras_table."""
     ws = wb["Resumen Constructora"]
-    
-    # Define styles
+
     border_style = Border(
         left=Side(style='thin'),
         right=Side(style='thin'),
@@ -342,56 +333,91 @@ def populate_constructor_summary(wb, catalog, viviendas):
         bottom=Side(style='thin')
     )
     center_align = Alignment(horizontal="center", vertical="center")
-    left_align = Alignment(horizontal="left", vertical="center")
-    
-    print_info("Creating direct-reference formulas for constructor summary...")
-    
-    # Collect all sheet names (same transformation used when creating sheets)
+    left_align   = Alignment(horizontal="left",   vertical="center")
+    total_font   = Font(bold=True, size=11, name="Calibri")
+    total_fill   = PatternFill(start_color="F2F2F2", end_color="F2F2F2", fill_type="solid")
+
+    if sheet_item_rows is None:
+        sheet_item_rows = {}
+
+    # Build ordered sheet names matching individual sheet tabs
     sheet_names = []
     for vivienda in viviendas:
         piso = vivienda.get("Piso", "")
-        piso_short = piso.replace("Escalera ", "E").replace(" - Planta ", " ").replace(" - Puerta ", "")
+        piso_short = (piso.replace("Escalera ", "E")
+                         .replace(" - Planta ", " ")
+                         .replace(" - Puerta ", ""))
         sheet_names.append(piso_short[:31])
-    
-    # Compute the row where mejoras start in every individual sheet
-    # Header always = 8 rows; table header offset = +2; data offset = +3
-    DATA_START_ROW = 8 + 3  # = 11
-    # +1 Refuerzo after COCINA, +2 FONDO DECORADO after each of the two baño pasos
-    N_PASOS = len(catalog["pasos_basicos"]) + 1 + 2
-    MEJORAS_START_ROW = DATA_START_ROW + N_PASOS  # = 19
-    
+
+    print_info("Creating direct-reference formulas for constructor summary...")
+
+    def _importe_formula(codigo):
+        refs = [
+            f"'{sn}'!E{sheet_item_rows[sn][codigo]}"
+            for sn in sheet_names
+            if sn in sheet_item_rows and codigo in sheet_item_rows[sn]
+        ]
+        return ("=" + "+".join(refs)) if refs else 0
+
+    def _count_formula(codigo):
+        parts = [
+            f"('{sn}'!E{sheet_item_rows[sn][codigo]}>0)*1"
+            for sn in sheet_names
+            if sn in sheet_item_rows and codigo in sheet_item_rows[sn]
+        ]
+        return ("=" + "+".join(parts)) if parts else 0
+
+    def _write_item(row, codigo, concepto, bold=False):
+        fnt = total_font if bold else Font(size=10, name="Calibri")
+        fll = total_fill if bold else None
+        for col in range(1, 5):
+            c = ws.cell(row=row, column=col)
+            c.border = border_style
+            c.font   = fnt
+            if fll:
+                c.fill = fll
+        ws.cell(row=row, column=1).value     = codigo
+        ws.cell(row=row, column=1).alignment = center_align
+        ws.cell(row=row, column=2).value     = concepto
+        ws.cell(row=row, column=2).alignment = left_align
+        ws.cell(row=row, column=3).value     = _count_formula(codigo)
+        ws.cell(row=row, column=3).alignment = center_align
+        ws.cell(row=row, column=4).value     = _importe_formula(codigo)
+        ws.cell(row=row, column=4).alignment = center_align
+        ws.cell(row=row, column=4).number_format = '#,##0.00'
+
     current_row = 4
-    mejora_idx = 0
-    
+
+    # Cocina paso and its refuerzo
+    _write_item(current_row, "COCINA",          "Elección de Cocina")
+    current_row += 1
+    _write_item(current_row, "REFUERZO-COCINA", "Refuerzo de Pladur - Cocina")
+    current_row += 1
+
+    # Every mejora from the catalog, in catalog order
     for mejora_cat in catalog.get("mejoras", []):
         for item in mejora_cat.get("items", []):
+            codigo   = item.get("codigo", "")
             concepto = item.get("concepto", "")
-            if not concepto:
+            if not codigo or not concepto:
                 continue
-            
-            codigo = f"MEJORA-{mejora_idx + 1:03d}"
-            item_row = MEJORAS_START_ROW + mejora_idx
-            
-            # Column A: Código
-            ws.cell(row=current_row, column=1, value=codigo).border = border_style
-            ws.cell(row=current_row, column=1).alignment = center_align
-            
-            # Column B: Concepto
-            ws.cell(row=current_row, column=2, value=concepto).border = border_style
-            ws.cell(row=current_row, column=2).alignment = left_align
-            
-            # Column C: Direct sum of E{item_row} across all individual sheets
-            # Formula: ='E1 1A'!E17+'E1 1B'!E17+... (importe now in column E)
-            formula = "=" + "+".join([f"'{sn}'!E{item_row}" for sn in sheet_names])
-            cell_qty = ws.cell(row=current_row, column=3)
-            cell_qty.value = formula
-            cell_qty.border = border_style
-            cell_qty.alignment = center_align
-            
-            mejora_idx += 1
+            _write_item(current_row, codigo, concepto)
             current_row += 1
-    
-    print_info(f"Created {mejora_idx} direct-reference formula rows (mejoras only)")
+
+    # Grand-total row
+    current_row += 1
+    c = ws.cell(row=current_row, column=2, value="TOTAL IMPORTE")
+    c.font = total_font; c.fill = total_fill; c.border = border_style; c.alignment = left_align
+    ws.cell(row=current_row, column=1).border = border_style
+    ws.cell(row=current_row, column=1).fill   = total_fill
+    ws.cell(row=current_row, column=3).border = border_style
+    ws.cell(row=current_row, column=3).fill   = total_fill
+    c = ws.cell(row=current_row, column=4,
+                value=f'=SUM(D4:D{current_row - 2})')
+    c.font = total_font; c.fill = total_fill; c.border = border_style
+    c.alignment = center_align; c.number_format = '#,##0.00'
+
+    print_info(f"Created {current_row - 4} rows in constructor summary")
 
 
 def create_header_box(ws, vivienda, origin_header=None):
@@ -684,6 +710,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                   .replace(" - Puerta ", ""))
 
     # ── Pasos básicos ─────────────────────────────────────────────────────
+    item_rows = {}   # tracks actual row per item; used by populate_constructor_summary
     for paso in catalog["pasos_basicos"]:
         if paso["codigo"] == "COCINA":
             opciones = get_cocina_options_for_vivienda(piso_short, catalog)
@@ -720,10 +747,12 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
             ws[f'E{current_row}'].alignment = right_align
             ws[f'E{current_row}'].number_format = '#,##0.00'
 
+            item_rows["COCINA"] = current_row
             cocina_row = current_row
             current_row += 1
 
             # ── Refuerzo de Pladur - Cocina (always after COCINA) ─────────
+            item_rows["REFUERZO-COCINA"] = current_row
             ws[f'A{current_row}'].value = "Refuerzo de Pladur - Cocina"
             ws[f'A{current_row}'].font  = refuerzo_font
             ws[f'A{current_row}'].fill  = cocina_fill
@@ -835,7 +864,6 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
                 current_row += 1
 
     # ── Mejoras ──────────────────────────────────────────────────────────
-    item_rows = {}  # codigo → row, for depende_de lookups
     if "mejoras" in catalog:
         for mejora_cat in catalog["mejoras"]:
             if "items" in mejora_cat:
@@ -955,7 +983,7 @@ def create_mejoras_table(ws, vivienda, catalog, start_row):
     )
     ws.column_dimensions['A'].width = max_len + 4
 
-    return current_row
+    return current_row, item_rows
 
 
 def generate_final_sheets():
@@ -992,6 +1020,7 @@ def generate_final_sheets():
 
     print_info(f"Creating {len(viviendas)} individual sheets...")
 
+    sheet_item_rows = {}
     for idx, vivienda in enumerate(viviendas, start=1):
         piso = vivienda.get("Piso", f"Vivienda_{idx}")
         piso_short = piso.replace("Escalera ", "E").replace(" - Planta ", " ").replace(" - Puerta ", "")
@@ -1003,11 +1032,12 @@ def generate_final_sheets():
         ws = wb.create_sheet(title=sheet_name)
 
         header_end_row = create_header_box(ws, vivienda)
-        create_mejoras_table(ws, vivienda, catalog, header_end_row)
+        _, item_rows = create_mejoras_table(ws, vivienda, catalog, header_end_row)
+        sheet_item_rows[sheet_name] = item_rows
         _apply_a4_print_setup(ws)
     
     print_info("Populating constructor summary with dynamic formulas...")
-    populate_constructor_summary(wb, catalog, viviendas)
+    populate_constructor_summary(wb, catalog, viviendas, sheet_item_rows)
     
     timestamp = get_timestamp()
     output_file = os.path.join(output_dir, f"viviendas_final_{timestamp}.xlsx")
